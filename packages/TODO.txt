@@ -20,3 +20,4 @@ Finish manual.txt
 
 Maybe add a export like "/install_packages.txt" for all installed Pacman packages at the very end of chrooted.sh
 
+Other stuff in 11_Services.sh file
