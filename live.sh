@@ -44,13 +44,10 @@ pacman -U "yay/yay-*.pkg.tar.zst"
 
 
 
-# Packages: lightdm, dhcpd, sudo, [nvidia/intel/amd], (git base-devel go) for yay,
-
-
-# fstab?
-
 # dotfiles?
 # ~/.config/fish/config.fish
 # ~/.config/syncthing/config.xml
 
 
+
+# TODO: greeter-session inside /etc/lightdm/lightdm.conf

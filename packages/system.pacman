@@ -1,0 +1,10 @@
+bluez
+lm_sensors
+networkmanager
+pulseaudio
+pulseaudio-bluetooth
+sudo
+usbutils
+wget
+which
+xdg-utils
