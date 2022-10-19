@@ -10,3 +10,13 @@ How to do dotfiles like fish and such?
 Cargo and Go packages from starch?
 
 Maybe put services in an external file? Or just write a function to search to see if they exist first?
+
+Move files referenced in shell scripts to 
+
+
+Maybe change shell scripts to use fish. Or at least chrooted.
+
+Finish manual.txt
+
+Maybe add a export like "/install_packages.txt" for all installed Pacman packages at the very end of chrooted.sh
+
