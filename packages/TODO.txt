@@ -1,0 +1,12 @@
+Split up gui.pacman and gui.aur?
+
+Write script to grab / build all packages for a .aur file, then pacstrap them?
+
+
+VS Code Extensions should be stored or synced from somewhere else.
+
+How to do dotfiles like fish and such?
+
+Cargo and Go packages from starch?
+
+Maybe put services in an external file? Or just write a function to search to see if they exist first?

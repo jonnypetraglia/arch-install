@@ -21,7 +21,7 @@ mkdir -p $ROOT_FS/post-install
 pacman -U $ROOT_FS/post-install/*.tar.zst
 # TODO: Pacstrap these instead
 
-# 11. Services
+# Services
 systemctl enable sddm.service
 systemctl enable sshd.service
 systemctl enable bluetooth.service
@@ -33,7 +33,7 @@ systemctl enable dhcpcd.service
 
 
 
-# N. Misc Packages
+# Misc Packages
 ## fish shell
 cat ./packages/*fish.txt | fish install
 ## Node.js
