@@ -1,4 +1,5 @@
 clojure
+gcc
 go
 lua52
 luajit

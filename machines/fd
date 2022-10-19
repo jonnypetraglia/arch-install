@@ -1,0 +1,12 @@
+cli.pacman
+cli.yay
+dev.gui.yay
+dev.languages.pacman ??? Or just the ones with files in `moar`?
+gui.pacman
+gui.yay
+system.filesystems.pacman
+system.fonts.pacman
+system.gui.pacman
+system.pacman
+system.services.pacman
+system.yay
