@@ -8,6 +8,7 @@ gui.min.pacman
 packagers.pacman
 system.filesystems.pacman
 system.fonts.pacman
+system.fonts.aur
 system.gui.pacman
 system.pacman
 system.services.pacman

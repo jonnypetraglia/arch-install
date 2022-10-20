@@ -1,0 +1,6 @@
+cns                 # Cargo
+lazynpm             # NPM
+pacseek-bin         # Pacman/AUR
+spotify-tui         # {exec: spt}
+sysz                # Systemd
+termscp             # Filezilla replacement

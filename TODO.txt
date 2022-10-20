@@ -27,6 +27,8 @@ starch needs `exec i3` inside ~/.xinitrc
 
 ly.service ?
 
+Script for running pipes: `pipes-rs -c rgb -d 25 -k light,heavy,curved,knobby`
+
 
 
 ## After first attempt:
