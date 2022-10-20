@@ -17,8 +17,8 @@ echo $MY_HOSTNAME > $ROOT_FS/etc/hostname
 echo "127.0.0.1     localhost" > $ROOT_FS/etc/hosts
 echo "::1           localhost" >> $ROOT_FS/etc/hosts
 echo "127.0.0.1     $MY_HOSTNAME.localhost      localhost" >> $ROOT_FS/etc/hosts
-echo 'domain Home' >>$ROOT_FS/resolv.conf
-echo "nameserver $MY_ROUTER_IP" > $ROOT_FS/resolv.conf
+echo 'domain Home' > $ROOT_FS/resolv.conf
+echo "nameserver $MY_ROUTER_IP" >> $ROOT_FS/resolv.conf
 echo 'nameserver 8.8.8.8' >> $ROOT_FS/resolv.conf
 
 # Users
