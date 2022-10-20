@@ -1,17 +1,8 @@
 clojure
 gcc
-go
 lua52
 luajit
-node-gyp
-nodejs
-npm
-python
-python-pip
-ruby
 ruby-irb
-rubygems
-rust
 tcl
 tcllib
 tk

@@ -1,14 +1,20 @@
+set -e
+set -o pipefail
+
 INPUT_FILE=${2:-/dev/stdin}         #Argument 2 from command line is the input file
+
+mkdir -p tmpdir
+cd tmpdir
+
+# https://github.com/archlinux/arch-install-scripts/blob/master/pacstrap.in
 
 while read -r pkg
 do
-    mkdir $pkg
-    curl -o ./$pkg/PKGBUILD "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg"
-    cd $pkg
+    curl -o PKGBUILD "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg"
     makepkg
-    cp "$pkg/*.pkg.tar.zst" ./
+    mv *.pkg.tar.zst ..
+    rm -rf *
 done < "$INPUT_FILE"
 
-
-pacman -U *.pkg.tar.zst
-
+cd ..
+rm -rf tmpdir

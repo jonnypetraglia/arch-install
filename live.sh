@@ -34,17 +34,30 @@ echo "root  ALL=(ALL:ALL)   ALL" > $ROOT_FS/etc/sudoers
 echo "$MY_USERNAME  ALL=(ALL:ALL)   ALL" >> $ROOT_FS/etc/sudoers
 
 
+# Packages
+
+for pkgFile in $(cat machines/$MY_HOSTNAME)
+do
+    if [[ $pkgfile = *pacman ]]
+    then
+        cat "packages/$pkgfile" | pacstrap $ROOT_FS
+    fi
+done
+
+
 # AUR
-## Yay
-pacman -S git base-devel go
-mkdir yay
-curl -o ./yay/PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=yay
-cd yay
-makepkg
-mkdir -p $ROOT_FS/post-install
-pacman -U "yay/yay-*.pkg.tar.zst"
-## The rest
-cp "yay/yay-*.pkg.tar.zst" $ROOT_FS/post-install/
+pacman -Sy arch-install-scripts git base-devel go
+echo yay | ./yay-pacstrap.sh
+
+for pkgFile in $(cat machines/$MY_HOSTNAME)
+do
+    if [[ $pkgfile = *aur ]]
+    then
+        cat "packages/$pkgfile" | ./yay-pacstrap.sh
+    fi
+done
+pacstrap -U $ROOT_FS *.pkg.tar.zst
+
 
 
 # dotfiles?

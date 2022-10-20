@@ -1,7 +1,7 @@
 cli.pacman
 cli.aur
 dev.gui.aur
-dev.languages.pacman ??? Or just the ones with files in `moar`?
+dev.packagers.pacman
 gui.pacman
 gui.aur
 system.filesystems.pacman
