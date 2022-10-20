@@ -1,9 +1,16 @@
-source ./environment.sh
+if [ $(id -u) -ne 0 ]
+then
+    die 'Script must be run as root'
+fi
 
 ROOT_FS = 'releng/airootfs'
 
+
 ###### Inside Live CD ######
 
+source ./environment.sh
+
+pacman -Sy arch-install-scripts
 
 # Timezone
 ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE /etc/localtime
@@ -35,16 +42,18 @@ echo "$MY_USERNAME  ALL=(ALL:ALL)   ALL" >> $ROOT_FS/etc/sudoers
 
 
 # Packages
-pacman -Sy arch-install-scripts
 pacstrap-machine.sh pacman  "machines/$MY_HOSTNAME"     $ROOT_FS
 pacstrap-machine.sh aur     "machines/$MY_HOSTNAME"     $ROOT_FS
 
 
-
-# dotfiles?
-# ~/.config/fish/config.fish
-# ~/.config/syncthing/config.xml
+# Misc System
+echo "fs.inotify.max_user_watches=1000000" >> $ROOT_FS/etc/sysctl.d/90-override.conf
 
 
+# TODO dotfiles here?
 
-# TODO: greeter-session inside /etc/lightdm/lightdm.conf
+
+
+echo "Live CD portion complete. Enter chroot by running `arch-chroot $ROOT_FS`"
+# TODO: This will be SO AWESOME after I test it
+# arch-chroot $ROOT_FS ./chrooted.sh

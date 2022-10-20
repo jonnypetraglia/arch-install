@@ -1,0 +1,21 @@
+[Unit]
+Description=youtubedl Web GUI (Port 5000)
+Documentation=man:syncthing(1)
+StartLimitIntervalSec=60
+StartLimitBurst=4
+
+[Service]
+Environment=YOUTUBE_DL_PATH=/Sync/ytdl
+ExecStart=/usr/bin/node /opt/ytdl-web/index.js
+Restart=on-failure
+RestartSec=1
+SuccessExitStatus=3 4
+RestartForceExitStatus=3 4
+
+# Hardening
+SystemCallArchitectures=native
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target

@@ -2,10 +2,10 @@ aur
 cli.pacman
 cli.aur
 dev.gui.aur
-dev.languages.pacman ??? Or just the ones with files in `moar`?
 gui.pacman
 gui.min.aur
 gui.min.pacman
+packagers.pacman
 system.filesystems.pacman
 system.fonts.pacman
 system.gui.pacman

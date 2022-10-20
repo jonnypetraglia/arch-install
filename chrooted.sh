@@ -1,6 +1,12 @@
-source ./environment.sh
+if [ $(id -u) -ne 0 ]
+then
+    die 'Script must be run as root'
+fi
 
 ###### Post-arch-chroot ######
+
+source ./environment.sh
+
 
 # Timezone
 hwclock --systohc
@@ -15,27 +21,24 @@ mkinitcpio -P
 bootctl install # systemd-boot
 
 # Services
-systemctl enable lightdm.service
-systemctl enable sshd.service
 systemctl enable bluetooth.service
-systemctl enable reflector.service
 systemctl enable dhcpcd.service
+systemctl enable lightdm.service
+systemctl enable reflector.service
+systemctl enable sshd.service
+systemctl enable syncthing.service
 
 
+# Language Packages
+cat ./packages/*fisher | fish install
+npm install --global $(cat ./packages/*npm)
+gem install $(cat ./packages/*gem)
+pip install $(cat ./packages/*pip)
+cargo install $(cat ./packages/*cargo)
+go install $(cat ./packages/*go)
 
 
+# Wrapping up
+pacman -Q > /installed_packages.txt
 
-# Misc Packages
-## fish shell
-cat ./packages/*fish.txt | fish install
-## Node.js
-npm install --global $(cat ./packages/*npm.txt)
-## Ruby
-gem install $(cat ./packages/*gem.txt)
-## Python
-pip install $(cat ./packages/*pip.txt)
-## TODO: Cargo
-## TODO: VS Code
-## TODO: Go?
-
-
+echo "Finished! Enjoy using $MY_HOSTNAME!"

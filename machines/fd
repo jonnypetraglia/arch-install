@@ -2,9 +2,9 @@ aur
 cli.pacman
 cli.aur
 dev.gui.aur
-dev.packagers.pacman
 gui.pacman
 gui.aur
+packagers.pacman
 system.filesystems.pacman
 system.fonts.pacman
 system.gui.pacman

@@ -1,12 +1,19 @@
-VS Code Extensions should be stored or synced from somewhere else.
+
+skel!!!!
 
 How to do dotfiles like fish and such?
+    VS Code Extensions should be stored or synced from somewhere else.
 
-Cargo and Go packages from starch?
 
 
-Other stuff in 11_Services.sh file
+greeter-session inside /etc/lightdm/lightdm.conf ?
 
-Maybe add a export like "/install_packages.txt" for all installed Pacman packages at the very end of chrooted.sh
 
-Finish partition part of manual.txt
+
+Sync dir should be /Sync
+ytdl dir is /opt/ytdl-web
+
+
+## After first attempt:
+    - Finish partition part of manual.txt
+    - if live.sh worked, test calling chrooted.sh using arch-chroot
