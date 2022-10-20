@@ -2,18 +2,36 @@
 skel!!!!
 
 How to do dotfiles like fish and such?
-    VS Code Extensions should be stored or synced from somewhere else.
+    fish_add_path ~/.cargo/bin needs to go  in config.fish
+    echo 'function cls; wipe --fps 30 --duration 1000; end' >> ~/.config/fish/config.fish
+
+VS Code Extensions should be stored or synced from somewhere else.
 
 
 
-greeter-session inside /etc/lightdm/lightdm.conf ?
-
+## Tinytim
 
 
 Sync dir should be /Sync
+    This requires adjusting Tim's syncthing config!!!!!
 ytdl dir is /opt/ytdl-web
+
+tinytim needs syncthing.service inside ~/.config/systemd/user/default.target.wants ?
+
+
+## Starch
+
+xdg-settings set default-web-browser min.desktop
+
+starch needs `exec i3` inside ~/.xinitrc
+
+ly.service ?
+
 
 
 ## After first attempt:
     - Finish partition part of manual.txt
     - if live.sh worked, test calling chrooted.sh using arch-chroot
+
+## Bonus
+    - greeter-session inside /etc/lightdm/lightdm.conf ?
