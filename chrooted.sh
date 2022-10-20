@@ -1,7 +1,5 @@
 source ./environment.sh
 
-ROOT_FS = ''
-
 ###### Post-arch-chroot ######
 
 # Timezone
@@ -15,11 +13,6 @@ mkinitcpio -P
 
 # Bootloader
 bootctl install # systemd-boot
-
-# AUR
-mkdir -p $ROOT_FS/post-install
-pacman -U $ROOT_FS/post-install/*.tar.zst
-# TODO: Pacstrap these instead
 
 # Services
 systemctl enable lightdm.service

@@ -1,19 +1,14 @@
 Write script to grab / build all packages for a .aur file, then pacstrap them?
 
-
 VS Code Extensions should be stored or synced from somewhere else.
 
 How to do dotfiles like fish and such?
 
 Cargo and Go packages from starch?
 
-Maybe put services in an external file? Or just write a function to search to see if they exist first?
 
-
-Maybe change shell scripts to use fish. Or at least chrooted.
-
-Finish manual.txt
+Other stuff in 11_Services.sh file
 
 Maybe add a export like "/install_packages.txt" for all installed Pacman packages at the very end of chrooted.sh
 
-Other stuff in 11_Services.sh file
+Finish partition part of manual.txt
