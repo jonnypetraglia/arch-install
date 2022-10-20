@@ -22,12 +22,11 @@ pacman -U $ROOT_FS/post-install/*.tar.zst
 # TODO: Pacstrap these instead
 
 # Services
-systemctl enable sddm.service
+systemctl enable lightdm.service
 systemctl enable sshd.service
 systemctl enable bluetooth.service
 systemctl enable reflector.service
 systemctl enable dhcpcd.service
-
 
 
 
