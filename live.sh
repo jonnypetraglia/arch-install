@@ -35,28 +35,9 @@ echo "$MY_USERNAME  ALL=(ALL:ALL)   ALL" >> $ROOT_FS/etc/sudoers
 
 
 # Packages
-
-for pkgFile in $(cat machines/$MY_HOSTNAME)
-do
-    if [[ $pkgfile = *pacman ]]
-    then
-        cat "packages/$pkgfile" | pacstrap $ROOT_FS
-    fi
-done
-
-
-# AUR
-pacman -Sy arch-install-scripts git base-devel go
-echo yay | ./yay-pacstrap.sh
-
-for pkgFile in $(cat machines/$MY_HOSTNAME)
-do
-    if [[ $pkgfile = *aur ]]
-    then
-        cat "packages/$pkgfile" | ./yay-pacstrap.sh
-    fi
-done
-pacstrap -U $ROOT_FS *.pkg.tar.zst
+pacman -Sy arch-install-scripts
+pacstrap-machine.sh pacman  "machines/$MY_HOSTNAME"     $ROOT_FS
+pacstrap-machine.sh aur     "machines/$MY_HOSTNAME"     $ROOT_FS
 
 
 

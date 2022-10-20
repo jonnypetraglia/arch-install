@@ -1,5 +1,3 @@
-Write script to grab / build all packages for a .aur file, then pacstrap them?
-
 VS Code Extensions should be stored or synced from somewhere else.
 
 How to do dotfiles like fish and such?
