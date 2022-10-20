@@ -1,11 +1,17 @@
 
-skel!!!!
+
+## Dotfiles
 
 How to do dotfiles like fish and such?
     fish_add_path ~/.cargo/bin needs to go  in config.fish
     echo 'function cls; wipe --fps 30 --duration 1000; end' >> ~/.config/fish/config.fish
+    .screenrc
+    logseq theme
 
 VS Code Extensions should be stored or synced from somewhere else.
+
+
+### skel?
 
 
 
@@ -25,9 +31,15 @@ xdg-settings set default-web-browser min.desktop
 
 starch needs `exec i3` inside ~/.xinitrc
 
-ly.service ?
+ly.service
 
 Script for running pipes: `pipes-rs -c rgb -d 25 -k light,heavy,curved,knobby`
+
+
+
+# Werk
+
+onedriver.service
 
 
 
@@ -37,3 +49,4 @@ Script for running pipes: `pipes-rs -c rgb -d 25 -k light,heavy,curved,knobby`
 
 ## Bonus
     - greeter-session inside /etc/lightdm/lightdm.conf ?
+    - code-server.service
