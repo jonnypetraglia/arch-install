@@ -1,3 +1,7 @@
+#!/bin/env bash
+set -e
+set -o pipefail
+
 if [ $(id -u) -ne 0 ]
 then
     die 'Script must be run as root'
@@ -7,10 +11,13 @@ fi
 
 source ./environment.sh
 
+if [ ! -f "machines/$MY_HOSTNAME" ]
+then
+    die "No machine configuration found for $MY_HOSTNAME"
+fi
+
 pacman -Sy arch-install-scripts
-
 pacstrap -K $ROOT_FS base linux linux-firmware
-
 
 # Timezone
 ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE /etc/localtime

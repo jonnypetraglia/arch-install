@@ -1,4 +1,6 @@
 #!/bin/env bash
+set -e
+set -o pipefail
 
 source ./environment.sh
 
