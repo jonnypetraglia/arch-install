@@ -3,14 +3,14 @@ then
     die 'Script must be run as root'
 fi
 
-ROOT_FS = 'releng/airootfs'
-
-
 ###### Inside Live CD ######
 
 source ./environment.sh
 
 pacman -Sy arch-install-scripts
+
+pacstrap -K $ROOT_FS base linux linux-firmware
+
 
 # Timezone
 ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE /etc/localtime

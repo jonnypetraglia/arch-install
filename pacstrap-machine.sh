@@ -11,5 +11,5 @@ do
     then
         
     fi
-    cat "packages/$pkgfile" | pacstrap $ROOT_FS
+    cat "packages/$pkgfile" | pacstrap -G -M $ROOT_FS
 done

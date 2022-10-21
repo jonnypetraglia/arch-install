@@ -1,7 +1,7 @@
 
 1. Create partition table
 
-EFI???
+GPT
 
 2. Create partitions
 
@@ -31,7 +31,6 @@ genfstab -U /mnt > /mnt/etc/fstab
 
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 pacstrap /mnt base linux linux-firmware
-cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 
 7. live.sh
 
