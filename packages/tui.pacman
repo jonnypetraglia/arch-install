@@ -1,4 +1,4 @@
-bandwhich           # network utilization
-diskonaut           # windirstate replacement
-gping               # ping replacement
+bandwhich           # network utilization   [rust]
+diskonaut           # windirstat replacement[rust]
+gping               # ping replacement      [rust]
 testdisk

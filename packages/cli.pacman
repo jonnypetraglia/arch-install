@@ -3,13 +3,13 @@ dua-cli             # du replacement        [rust]      `dua i` is interactive
 duf                 # Disk usage & free     [rust]
 dust                # Folder size           [rust]
 fd                  # find replacement      [rust]
-fish                # bash replacement
-fisher              # fish package manager
+fish                # bash replacement      [C++]
+fisher              # fish plugin manager   [fish]
 fortune-mod         #                       [C]
-git
+git                 #                       [C]
 lsd                 # ls replacement        [rust]
 nmap
-p7zip
+p7zip               #                                   `7z`
 procs               # ps replacement        [rust]
 ripgrep             # grep replacement      [rust]      `rg`
 rsync
@@ -19,5 +19,4 @@ sd                  # sed replacement       [rust]
 tealdeer            # man replacement       [rust]
 the_silver_searcher # ack replacement       [C]         `ag`
 vim
-zip
 zoxide              # cd replacement        [rust]      `z`

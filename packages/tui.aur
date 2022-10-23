@@ -1,5 +1,5 @@
 cns                 # Cargo
-gitui                       # 
+gitui               # 
 lazynpm             # NPM
 pacseek-bin         # Pacman/AUR
 spotify-tui         # {exec: spt}
