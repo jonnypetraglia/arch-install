@@ -1,0 +1,1 @@
+wipe-term           # clear replacement     [rust]      `wipe --fps 30 --duration 1000; /sbin/clear`

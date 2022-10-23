@@ -1,5 +1,3 @@
-amp
-bat
-dua-cli
-exa
-gitui
+amp                 # vim replacement       [rust]
+bat                 # cat replacement       [rust]
+exa                 # ls replacement        [rust]

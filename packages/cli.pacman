@@ -1,19 +1,23 @@
-duf
-dust
-fd
-fish
-fisher
-fortune-mod
+dotacat             # pretty colors         [rust]
+dua-cli             # du replacement        [rust]      `dua i` is interactive
+duf                 # Disk usage & free     [rust]
+dust                # Folder size           [rust]
+fd                  # find replacement      [rust]
+fish                # bash replacement
+fisher              # fish package manager
+fortune-mod         #                       [C]
 git
+lsd                 # ls replacement        [rust]
 nmap
 p7zip
-procs
+procs               # ps replacement        [rust]
+ripgrep             # grep replacement      [rust]      `rg`
 rsync
 screen
 scrot
-sd
-tealdeer
-the_silver_searcher
+sd                  # sed replacement       [rust]
+tealdeer            # man replacement       [rust]
+the_silver_searcher # ack replacement       [C]         `ag`
 vim
 zip
-zoxide
+zoxide              # cd replacement        [rust]      `z`
