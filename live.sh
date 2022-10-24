@@ -18,7 +18,7 @@ then
     exit 404
 fi
 
-pacman -Sy archlinux-keyring --noconfirmm
+pacman -Sy archlinux-keyring --noconfirm
 pacman -S arch-install-scripts --noconfirm
 pacstrap -K $ROOT_FS base linux linux-firmware
 
