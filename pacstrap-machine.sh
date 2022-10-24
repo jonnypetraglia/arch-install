@@ -30,6 +30,6 @@ do
 	rm -rf tmp_build
     else
 	    echo "Pacman $pkgfile"
-	    sudo pacstrap $(cut -d' ' -f packages/$pkgfile) $ROOT_FS
+	    sudo pacstrap $(cut -d' ' -f1 packages/$pkgfile) $ROOT_FS
     fi
 done
