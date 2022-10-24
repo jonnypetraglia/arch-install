@@ -16,7 +16,9 @@ then
     die "No machine configuration found for $MY_HOSTNAME"
 fi
 
-pacman -Sy arch-install-scripts
+pacman -S archlinux-keyring --noconfir
+pacman -S archlinux-keyring --noconfirmm
+pacman -Sy arch-install-scripts --noconfirm
 pacstrap -K $ROOT_FS base linux linux-firmware
 
 # Timezone
@@ -49,8 +51,8 @@ echo "$MY_USERNAME  ALL=(ALL:ALL)   ALL" >> $ROOT_FS/etc/sudoers
 
 
 # Packages
-pacstrap-machine.sh pacman  "machines/$MY_HOSTNAME"     $ROOT_FS
-pacstrap-machine.sh aur     "machines/$MY_HOSTNAME"     $ROOT_FS
+./pacstrap-machine.sh pacman  "machines/$MY_HOSTNAME"     $ROOT_FS
+./pacstrap-machine.sh aur     "machines/$MY_HOSTNAME"     $ROOT_FS
 
 
 # Misc System

@@ -109,7 +109,7 @@ function start_filesystems {
         echo "Please enter a valid number"
         echo
         select_disk
-    elif ! (( "1" <= "$root_filesystem_selection" && "$root_filesystem_selection" < "${#FILESYSTEM_OPTIONS[@]}" ));
+    elif ! (( "0" <= "$root_filesystem_selection" && "$root_filesystem_selection" < "${#FILESYSTEM_OPTIONS[@]}" ));
     then
         echo "Invalid selection"
         start_filesystems
@@ -202,3 +202,11 @@ generate_fstab
 echo 'Finished configuring system partitions!'
 
 ./live.sh
+
+
+
+
+Next bit
+
+mkdir -p $ROOT_FS/boot/efi
+mount $EFI_PARTITION $ROOT_FS/boot/efi
