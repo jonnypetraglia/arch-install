@@ -14,6 +14,8 @@ do
     if [[ $pkgfile == *aur ]]
     then
 	mkdir -p ./tmp_build
+	rm -rf ./tmp_build
+	mkdir -p ./tmp_build
 	cd ./tmp_build
 	echo "AUR $pkgfile"
 	for pkg in $(cut -d' ' -f1 ../packages/$pkgfile)
