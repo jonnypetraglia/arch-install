@@ -19,7 +19,7 @@ do
 	cd ./tmp_build
 	chown nobody:nobody ./tmp_build
 	echo "AUR $pkgfile"
-	for pkg in $(cut -d' ' -f1 ../packages/$pkgfile)
+	cut -d' ' -f1 ../packages/$pkgfile | while read $pkg
 	do
 	   echo "Building $pkg"
            sudo -u nobody curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" -o PKGBUILD
@@ -30,6 +30,6 @@ do
 	rm -rf tmp_build
     else
 	    echo "Pacman $pkgfile"
-	    sudo pacstrap $(cut -d' ' -f1 packages/$pkgfile) $ROOT_FS
+	    sudo pacstrap $ROOT_FS $(cut -d' ' -f1 packages/$pkgfile)
     fi
 done
