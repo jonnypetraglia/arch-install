@@ -4,7 +4,8 @@ set -o pipefail
 
 if [ $(id -u) -ne 0 ]
 then
-    die 'Script must be run as root'
+    echo 'Script must be run as root'
+    exit 403
 fi
 
 ###### Inside Live CD ######
@@ -13,7 +14,8 @@ source ./environment.sh
 
 if [ ! -f "machines/$MY_HOSTNAME" ]
 then
-    die "No machine configuration found for $MY_HOSTNAME"
+    echo "No machine configuration found for $MY_HOSTNAME"
+    exit 404
 fi
 
 pacman -Sy archlinux-keyring --noconfirmm

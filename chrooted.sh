@@ -1,6 +1,7 @@
 if [ $(id -u) -ne 0 ]
 then
-    die 'Script must be run as root'
+    echo'Script must be run as root'
+    exit 403
 fi
 
 ###### Post-arch-chroot ######
