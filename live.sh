@@ -16,9 +16,8 @@ then
     die "No machine configuration found for $MY_HOSTNAME"
 fi
 
-pacman -S archlinux-keyring --noconfir
-pacman -S archlinux-keyring --noconfirmm
-pacman -Sy arch-install-scripts --noconfirm
+pacman -Sy archlinux-keyring --noconfirmm
+pacman -S arch-install-scripts --noconfirm
 pacstrap -K $ROOT_FS base linux linux-firmware
 
 # Timezone
