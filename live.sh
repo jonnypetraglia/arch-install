@@ -26,8 +26,8 @@ pacstrap -K $ROOT_FS base linux linux-firmware
 ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE $ROOT_FS/etc/localtime
 
 # Localization
-echo 'en_US.UTF-8 UTF-8' >> $ROOT_FS/etc/locale.gen # TODO: Is this needed?
-echo 'LANG=en_US.UTF-8' >> $ROOT_FS/etc/locale.conf
+echo 'en_US.UTF-8 UTF-8' > $ROOT_FS/etc/locale.gen # TODO: Is this needed?
+echo 'LANG=en_US.UTF-8' > $ROOT_FS/etc/locale.conf
 
 # Network Configuration
 echo $MY_HOSTNAME > $ROOT_FS/etc/hostname

@@ -1,4 +1,3 @@
-dotacat             # pretty colors         [rust]
 dua-cli             # du replacement        [rust]      `dua i` is interactive
 duf                 # Disk usage & free     [rust]
 dust                # Folder size           [rust]

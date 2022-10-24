@@ -1,3 +1,4 @@
 amp                 # vim replacement       [rust]
 bat                 # cat replacement       [rust]
+dotacat             # pretty colors         [rust]
 exa                 # ls replacement        [rust]
