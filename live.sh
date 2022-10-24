@@ -23,7 +23,7 @@ pacman --needed -S arch-install-scripts --noconfirm
 pacstrap -K $ROOT_FS base linux linux-firmware
 
 # Timezone
-ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE /etc/localtime
+ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE $ROOT_FS/etc/localtime
 
 # Localization
 echo 'en_US.UTF-8 UTF-8' >> $ROOT_FS/etc/locale.gen # TODO: Is this needed?
@@ -51,12 +51,6 @@ echo "root  ALL=(ALL:ALL)   ALL" > $ROOT_FS/etc/sudoers
 echo "$MY_USERNAME  ALL=(ALL:ALL)   ALL" >> $ROOT_FS/etc/sudoers
 
 
-# Packages
-for ext in pacman aur
-do
-  ./pacstrap-machine.sh $ext  "machines/$MY_HOSTNAME"     $ROOT_FS
-done
-
 # Misc System
 echo "fs.inotify.max_user_watches=1000000" >> $ROOT_FS/etc/sysctl.d/90-override.conf
 
@@ -66,5 +60,12 @@ echo "fs.inotify.max_user_watches=1000000" >> $ROOT_FS/etc/sysctl.d/90-override.
 
 
 echo "Live CD portion complete. Enter chroot by running `arch-chroot $ROOT_FS`"
-# TODO: This will be SO AWESOME after I test it
-# arch-chroot $ROOT_FS ./chrooted.sh
+arch-chroot $ROOT_FS ./chrooted.sh
+
+# Packages
+for ext in pacman aur
+do
+  arch-chroot $ROOT_FS ./pacstrap-machine.sh $ext  "machines/$MY_HOSTNAME"     $ROOT_FS
+done
+
+
