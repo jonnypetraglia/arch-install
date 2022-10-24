@@ -6,10 +6,10 @@ dev.gui.aur
 gui.pacman
 gui.min.aur
 packagers.pacman
+system.aur
 system.filesystems.pacman
 system.fonts.pacman
 system.fonts.aur
 system.gui.pacman
 system.pacman
 system.services.pacman
-system.aur
