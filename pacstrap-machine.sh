@@ -17,14 +17,15 @@ do
 	rm -rf ./tmp_build
 	mkdir -p ./tmp_build
 	cd ./tmp_build
+	chown nobody:nobody ./tmp_build
 	echo "AUR $pkgfile"
 	for pkg in $(cut -d' ' -f1 ../packages/$pkgfile)
 	do
 	   echo "Building $pkg"
-           curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" -o PKGBUILD
-           makepkg
+           sudo -u nobody curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" -o PKGBUILD
+           sudo -u nobody makepkg
 	done
-	sudo pacstrap -G -M -U *.tar.*
+	sudo pacstrap -G -M -U *.tar.* $ROOT_FS
 	cd ../
 	rm -rf tmp_build
     else
