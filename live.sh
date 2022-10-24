@@ -52,9 +52,10 @@ echo "$MY_USERNAME  ALL=(ALL:ALL)   ALL" >> $ROOT_FS/etc/sudoers
 
 
 # Packages
-./pacstrap-machine.sh pacman  "machines/$MY_HOSTNAME"     $ROOT_FS
-./pacstrap-machine.sh aur     "machines/$MY_HOSTNAME"     $ROOT_FS
-
+for ext in pacman aur
+do
+  ./pacstrap-machine.sh $ext  "machines/$MY_HOSTNAME"     $ROOT_FS
+done
 
 # Misc System
 echo "fs.inotify.max_user_watches=1000000" >> $ROOT_FS/etc/sysctl.d/90-override.conf
