@@ -186,7 +186,7 @@ function create_filesystems {
             btrfs filesystem label "${selected_disk_name}1" $MY_HOSTNAME
             ;;
         'ext4')
-            Execute e2label "${selected_disk_name}1" $MY_HOSTNAME
+            e2label "${selected_disk_name}1" $MY_HOSTNAME
             ;;
     esac
     mkfs.swap "${selected_disk_name}2"
