@@ -155,13 +155,14 @@ function write_everything {
 }
 function create_partitions {
     echo
+    echo 'Creating partitions'
     # https://superuser.com/questions/332252/how-to-create-and-format-a-partition-using-a-bash-script
     (
         echo g      # create a new empty GPT partition table
 
         # Root
         echo n      # add a new partition
-        #?? p   primary partition? Doesn't seem to be needed when trying flash drive...
+        # ?? p   primary partition? Doesn't seem to be needed when trying flash drive...
         echo        ## (Partition number) - will default to 1
         echo        ## (First sector) - will default to start of disk
         echo "+${root_partition_size}g" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
@@ -176,7 +177,7 @@ function create_partitions {
         echo 2      ## (Second partition)
         echo 19     ## (Linux Swap)
         echo w
-    ) | fdisk
+    ) | fdisk $selected_disk_name
 }
 function create_filesystems {
     "mkfs.${root_filesystem}" "${selected_disk_name}1"
@@ -211,7 +212,7 @@ generate_fstab
 
 echo 'Finished configuring system partitions!'
 
-./prechroot.sh
+# ./prechroot.sh
 
 
 
