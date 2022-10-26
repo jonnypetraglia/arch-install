@@ -38,12 +38,15 @@ case "$BOOTLOADER" in
         ;;
 esac
 
+# AUR Package manager
+sudo -u $MY_USERNAME ./aur-build.sh yay
+pacman -U ./yay-*.tar.zst --noconfirm
+rm yay-*.tar.zst
 
 
 # AUR Packages
-./aurstrap.sh $MY_HOSTNAME
-# Or if they were generated ahead of time (WIP) this:
-# pacman -U ./aurstrap
+./aurstrap.sh
+
 
 # Services
 for serv in dhcpcd lightdm reflector sshd syncthing
