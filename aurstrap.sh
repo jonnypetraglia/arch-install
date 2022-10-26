@@ -4,12 +4,11 @@ set -o pipefail
 
 source ./environment.sh
 
-DEST_DIR="$1"
+THIS_DIR="${BASH_SOURCE[0]%/*}"
 
-echo "Aurstrapping for $MY_HOSTNAME into $DEST_DIR"
-mkdir -p $DEST_DIR
+echo "Aurstrapping for $MY_HOSTNAME"
 for pkgfile in $(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".aur$")
 do
     echo "Aurstrapping $pkgfile"
-    ./build-aurs.sh ./packages/$pkgfile $DEST_DIR
+    $THIS_DIR/build-aurs.sh $THIS_DIR/packages/$pkgfile
 done
