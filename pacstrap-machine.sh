@@ -1,10 +1,16 @@
 #!/bin/env bash
 set -e
 set -o pipefail
-
-SOURCE_FILE="$2"
+if [ $(id -u) -ne 0 ]
+then
+    echo 'Script must be run as root'
+    exit 403
+fi
 
 source ./environment.sh
+
+
+SOURCE_FILE="$1"
 
 echo "Pacstrapping from $SOURCE_FILE"
 for ext in pacman aur

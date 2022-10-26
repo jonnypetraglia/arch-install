@@ -1,7 +1,9 @@
 #!/bin/env bash
+set -e
+set -o pipefail
 if [ $(id -u) -ne 0 ]
 then
-    echo'Script must be run as root'
+    echo 'Script must be run as root'
     exit 403
 fi
 
