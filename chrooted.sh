@@ -9,6 +9,7 @@ fi
 
 ###### Post-arch-chroot ######
 
+cd /arch-install
 source ./environment.sh
 
 BOOTLOADER='systemd-boot'
@@ -16,16 +17,16 @@ BOOTLOADER='systemd-boot'
 
 
 # # Packages
-# /arch-install/pacstrap-machine.sh "/arch-install/machines/$MY_HOSTNAME"
+/arch-install/pacstrap-machine.sh "/arch-install/machines/$MY_HOSTNAME"
 
 # # Timezone
-# hwclock --systohc
+hwclock --systohc
 
 # # Localization
-# locale-gen
+locale-gen
 
 # # Initramfs
-# mkinitcpio -P
+mkinitcpio -P
 
 # Bootloader
 case "$BOOTLOADER" in
@@ -42,19 +43,23 @@ esac
 
 # Services
 for serv in dhcpcd lightdm reflector sshd syncthing
+do
     if [ $(systemctl list-unit-files "${1}.service*" | wc -l) -gt 3 ]
-        systemctl enable $1.service
     then
+        systemctl enable $1.service
     fi
 done
 
 # Language Packages
-cat ./packages/*fisher | fish install
-npm install --global $(cat ./packages/*npm)
-gem install $(cat ./packages/*gem)
-pip install $(cat ./packages/*pip)
-cargo install $(cat ./packages/*cargo)
-go install $(cat ./packages/*go)
+function ifexists {
+    command -v $1 >/dev/null 2>&1
+}
+ifexists fish && cat ./packages/*fisher | fish install
+ifexists npm && npm install --global $(cat ./packages/*npm)
+ifexists gem && gem install $(cat ./packages/*gem)
+ifexists pip && pip install $(cat ./packages/*pip)
+ifexists cargo && cargo install $(cat ./packages/*cargo)
+ifexists go && go install $(cat ./packages/*go)
 
 
 # Wrapping up

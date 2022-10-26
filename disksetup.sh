@@ -181,25 +181,29 @@ function create_partitions {
     # https://superuser.com/questions/332252/how-to-create-and-format-a-partition-using-a-bash-script
     (
         echo g      # create a new empty GPT partition table
+        echo w
     ) | fdisk $selected_disk_name
     echo "Created new Partition Table on $selected_disk_name"
     (
-        # Boot
         echo n      # add a new partition
         echo        ## (Partition number) - will default to 1
         echo        ## (First sector) - will default to start of disk
         echo "+${boot_partition_size_mb}m" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
         echo t      # change a partition type
         echo 1      ## (EFI System)
-
-        # Root
+        echo w
+    ) | fdisk $selected_disk_name
+    echo "Created boot partition at $boot_partition"
+    (
         echo n      # add a new partition
         # ?? p   primary partition? Doesn't seem to be needed when trying flash drive...
         echo        ## (Partition number) - will default to 2
         echo        ## (First sector) - will default to start of disk
         echo "+${root_partition_size_gb}g" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
-
-        # Swap
+        echo w
+    ) | fdisk $selected_disk_name
+    echo "Created boot partition at $root_partition"
+    (
         echo n      # add a new partition
         echo        ## (Partition number) - will default to 3
         echo        ## (First sector) - will default to end of root partition
@@ -210,6 +214,7 @@ function create_partitions {
         echo 19     ## (Linux Swap)
         echo w
     ) | fdisk $selected_disk_name
+    echo "Created swap partition at $swap_partition"
 }
 function create_filesystems {
     echo 'Creating filesystem for Boot partition'
