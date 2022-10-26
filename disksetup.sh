@@ -55,18 +55,22 @@ function select_disk {
     fi
 }
 function print_disk_info {
+    echo selected $selected_disk_name
     disk_info=$(fdisk -l "$selected_disk_name")
     disk_model=$(echo "$disk_info" | grep '^Disk model:' | cut -d ':' -f2 | xargs)
     disk_size=$(echo "$disk_info" | grep "^Disk $selected_disk_name:" | cut -d ':' -f2 | cut -d ',' -f1 | xargs)
-    partitions=( $(echo "$disk_info" | grep '^/dev/') )
 
     echo
     echo "Disk:     $selected_disk_name"
     echo "Model:    $disk_model"
     echo "Size:     $disk_size"
-    if [[ "${#partitions[@]}" -gt 0 ]]
-    then
-        echo "WARNING: Disk has ${#partitions[@]} existing partition(s). All data will be lost."
+    
+    if [[ "$disk_info" =~ .*"^/dev/".* ]]; then
+        partitions=( $(echo "$disk_info" | grep '^/dev/'))
+        if [[ "${#partitions[@]}" -gt 0 ]]
+        then
+            echo "WARNING: Disk has ${#partitions[@]} existing partition(s). All data will be lost."
+        fi
     fi
 
     max_partition_size=$(echo "$disk_size" | cut -d ' ' -f1 | cut -d '.' -f1)  # TODO: This won't work if the disk is in TiB
@@ -113,10 +117,11 @@ function start_filesystems {
     then
         echo "Please enter a valid number"
         echo
-        select_disk
+        start_filesystems
     elif ! (( "0" <= "$root_filesystem_selection" && "$root_filesystem_selection" < "${#FILESYSTEM_OPTIONS[@]}" ));
     then
         echo "Invalid selection"
+        echo
         start_filesystems
     else
         root_filesystem="${FILESYSTEM_OPTIONS[$root_filesystem_selection]}"
