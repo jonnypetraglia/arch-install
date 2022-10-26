@@ -79,6 +79,11 @@ function print_disk_info {
     fi
 
     max_partition_size=$(echo "$disk_size" | cut -d ' ' -f1 | cut -d '.' -f1)  # TODO: This won't work if the disk is in TiB
+    if (( "${#partitions[@]}" > 0))
+    then
+        echo "ERROR: Delete all partitions on selected_disk_name before proceeding"
+        exit 500
+    fi
     # for partition in "${partitions[@]}"
     # do
     #     echo "$partition"
@@ -217,9 +222,9 @@ function create_partitions {
     echo "Created swap partition at $swap_partition"
 }
 function create_filesystems {
-    echo 'Creating filesystem for Boot partition'
+    echo "Creating filesystem for Boot partition at $boot_partition"
     mkfs.fat -F32 $boot_partition
-    echo "Creating filesystem for Root partition"
+    echo "Creating filesystem for Root partition at $root_partition"
     "mkfs.${root_filesystem}" $root_partition -F
     case "$root_filesystem" in
         'btrfs')
@@ -229,6 +234,7 @@ function create_filesystems {
             e2label $root_partition $MY_HOSTNAME
             ;;
     esac
+    echo "Creating Swap at $swap_partition"
     mkswap $swap_partition
 }
 
