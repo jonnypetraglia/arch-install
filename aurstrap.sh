@@ -4,10 +4,10 @@ set -o pipefail
 
 # source ./environment.sh
 
+THIS_DIR="${BASH_SOURCE[0]%/*}"
 MY_HOSTNAME="$1" # pass in as '*' to do all files with a TARGET_DIR
 TARGET_DIR="$2"
 
-THIS_DIR="${BASH_SOURCE[0]%/*}"
 
 if [ -z "$MY_HOSTNAME" ]
 then

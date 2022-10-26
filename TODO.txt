@@ -3,8 +3,9 @@
 
 EFI?
 
-# Pre
 
+
+ttf-nunito-sans is broken lol
 
 
 

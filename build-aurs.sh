@@ -2,6 +2,7 @@
 
 TARGET_FILE="$1"
 TARGET_DIR="$2"
+ABSOLUTE_TARGET_DIR="$pwd/$TARGET_DIR"
 
 RUN_AS=$(whoami)
 if [ $(id -u) -eq 0 ]
@@ -10,9 +11,10 @@ then
 fi
 
 function aurstrap {
-    if [ -z $TARGET_DIR ]
+    touch .
+    if $BUILD_ONLY
     then
-        sudo -u $RUN_AS yay -S --noconfirm $1
+        sudo -u $RUN_AS yay -S --noconfirm $1 --needed
     else
         sudo -u $RUN_AS yay -Sw --noconfirm $1 --builddir .
     fi
@@ -29,7 +31,7 @@ cd tmp
 
 for pkg in ${targets[@]}
 do
-    if ls $TARGET_DIR/$pkg*.tar.zst 1> /dev/null 2>&1
+    if ls $ABSOLUTE_TARGET_DIR/$pkg*.tar.zst 1> /dev/null 2>&1
     then
         echo "Skipping $pkg"
         continue
@@ -38,7 +40,7 @@ do
     aurstrap $pkg
     if ls $pkg/$pkg*.tar.zst 1> /dev/null 2>&1
     then
-        mv $pkg/$pkg*.tar.zst $TARGET_DIR
+        mv $pkg/$pkg*.tar.zst $ABSOLUTE_TARGET_DIR
     fi
     rm -rf *
 done
