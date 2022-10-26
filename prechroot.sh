@@ -26,6 +26,9 @@ do
     pacman -K $ROOT_FS $(cut -d' ' -f1 $TARGET_FILE) --needed --noconfirm
 done
 
+# Pacstrap AUR packages
+pacman -K $ROOT_FS ./aurstrap/*.tar.zst
+
 # Timezone
 ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE $ROOT_FS/etc/localtime
 

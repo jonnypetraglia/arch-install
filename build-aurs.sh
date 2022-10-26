@@ -1,7 +1,4 @@
 #!/bin/env bash
-set -e
-set -o pipefail
-
 TARGET_FILE="$1"
 RUN_AS=$(whoami)
 if [ $(id -u) -eq 0 ]
@@ -10,33 +7,29 @@ then
 fi
 
 
-echo "Pacinstalling AUR targets inside $TARGET_FILE"
 targets=$(cut -d' ' -f1 $TARGET_FILE)
-echo "Targets: $targets"
-
 
 mkdir -p tmp
-echo dir made
 rm -rf tmp
-echo dir destroyed
 mkdir -p tmp
-echo dir made
 chown $RUN_AS:$RUN_AS tmp
-echo chowned
 cd tmp
-echo "In $(pwd)"
-
 
 for pkg in ${targets[@]}
 do
+    if ls ../aurstrap/$pkg*.tar.zst 1> /dev/null 2>&1
+    then
+        echo "Skipping $pkg"
+        continue
+    fi
     echo "Building $pkg"
     curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" -o PKGBUILD
     sudo -u $RUN_AS makepkg
-    echo "Installing $pkg"
-    # pacman -U *.tar.*
-    mv *.tar.zst ../
+    # if [ $? -eq 0]
+    # then
+        mv *.tar.zst ../aurstrap
+    # fi
     rm -rf *
 done
 cd ../
 rm -rf tmp
-ls -1

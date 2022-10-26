@@ -1,3 +1,10 @@
+system.filesystems.pacman
+system.fonts.pacman
+system.fonts.aur
+system.gui.pacman
+system.pacman
+system.services.pacman
+system.aur
 aur.pacman
 aur.aur
 cli.pacman
@@ -6,10 +13,3 @@ dev.gui.aur
 gui.pacman
 gui.aur
 packagers.pacman
-system.filesystems.pacman
-system.fonts.pacman
-system.fonts.aur
-system.gui.pacman
-system.pacman
-system.services.pacman
-system.aur
