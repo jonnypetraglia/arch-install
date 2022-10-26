@@ -64,5 +64,5 @@ cp -r * $ROOT_FS/arch-install
 arch-chroot $ROOT_FS /arch-install/pacstrap-machine.sh "machines/$MY_HOSTNAME"
 
 # echo "Live CD portion complete. Running chroot portion."
-# arch-chroot $ROOT_FS ./chrooted.sh
+arch-chroot $ROOT_FS /arch-install/chrooted.sh
 

@@ -3,7 +3,7 @@ set -e
 set -o pipefail
 
 TARGET_FILE="$1"
-source ./environment.sh
+source /arch-install/environment.sh
 
 
 if [[ $TARGET_FILE == *aur ]]

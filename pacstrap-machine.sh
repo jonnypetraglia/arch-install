@@ -10,7 +10,7 @@ fi
 echo hi
 pwd
 
-source ./environment.sh
+source /arch-install/environment.sh
 
 
 SOURCE_FILE="$1"
