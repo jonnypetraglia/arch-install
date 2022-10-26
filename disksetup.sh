@@ -180,6 +180,7 @@ function create_partitions {
     ) | fdisk $selected_disk_name
 }
 function create_filesystems {
+    echo "Creating filesystems"
     "mkfs.${root_filesystem}" "${selected_disk_name}1"
     case "$root_filesystem" in
         'btrfs')
@@ -195,10 +196,12 @@ function create_filesystems {
 
 ######### Post-steps
 function mount_filesystems {
+    echo "Mounting new filesystems"
     mount "${selected_disk_name}1" $ROOT_FS
     swapon "${selected_disk_name}2"
 }
 function generate_fstab {
+    echo "Generating $ROOT_FS/etc/fstab"
     genfstab -U $ROOT_FS > $ROOT_FS/etc/fstab
 }
 
