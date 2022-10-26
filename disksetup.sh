@@ -181,7 +181,8 @@ function create_partitions {
 }
 function create_filesystems {
     echo "Creating filesystems"
-    "mkfs.${root_filesystem}" "${selected_disk_name}1"
+    "mkfs.${root_filesystem}" "${selected_disk_name}1" -F
+    echo "Setting labels?"
     case "$root_filesystem" in
         'btrfs')
             btrfs filesystem label "${selected_disk_name}1" $MY_HOSTNAME
@@ -190,7 +191,7 @@ function create_filesystems {
             e2label "${selected_disk_name}1" $MY_HOSTNAME
             ;;
     esac
-    mkfs.swap "${selected_disk_name}2"
+    mkswap "${selected_disk_name}2"
 }
 
 
@@ -202,6 +203,7 @@ function mount_filesystems {
 }
 function generate_fstab {
     echo "Generating $ROOT_FS/etc/fstab"
+    mkdir -p $ROOT_FS/etc
     genfstab -U $ROOT_FS > $ROOT_FS/etc/fstab
 }
 
@@ -215,7 +217,7 @@ generate_fstab
 
 echo 'Finished configuring system partitions!'
 
-# ./prechroot.sh
+./prechroot.sh
 
 
 
