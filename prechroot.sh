@@ -59,7 +59,7 @@ echo "fs.inotify.max_user_watches=1000000" >> $ROOT_FS/etc/sysctl.d/90-override.
 
 # Packages
 
-echo "Live CD portion complete. Entering chroot portion."
+echo "Live CD portion complete. Run `arch-chroot $ROOT_FS` then `/arch-install/chrooted.sh` to continue."
 
-arch-chroot $ROOT_FS /arch-install/chrooted.sh
+# arch-chroot $ROOT_FS /arch-install/chrooted.sh
 

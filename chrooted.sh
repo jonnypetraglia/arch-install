@@ -11,7 +11,6 @@ fi
 
 source ./environment.sh
 
-
 # Packages
 /arch-install/pacstrap-machine.sh "/arch-install/machines/$MY_HOSTNAME"
 
