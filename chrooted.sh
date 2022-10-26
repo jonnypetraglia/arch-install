@@ -13,6 +13,7 @@ cd /arch-install
 source ./environment.sh
 
 BOOTLOADER='systemd-boot'
+SYSTEMD_SERVICES='dhcpcd lightdm reflector sshd syncthing'
 
 
 
@@ -26,6 +27,7 @@ locale-gen
 mkinitcpio -P
 
 # Bootloader
+echo "Installing $BOOTLOADER"
 case "$BOOTLOADER" in
     'systemd-boot')
         bootctl install
@@ -37,19 +39,34 @@ case "$BOOTLOADER" in
         e2label "${selected_disk_name}1" $MY_HOSTNAME
         ;;
 esac
+echo "Installed $BOOTLOADER"
 
-# AUR Package manager
+# Language Packages
+
+function ifexists {
+    command -v $1 >/dev/null 2>&1
+}
+ifexists fish && cat ./packages/*fisher | sudo -u $MY_USERNAME fish install
+ifexists npm && npm install --global $(cat ./packages/*npm)
+ifexists gem && gem install $(cat ./packages/*gem)
+ifexists pip && pip install $(cat ./packages/*pip)
+ifexists cargo && sudo -u $MY_USERNAME cargo install $(cat ./packages/*cargo)
+# TODO: Error: "go.mod file not found in current directory or any parent directory."
+ifexists go && sudo -u $MY_USERNAME go install $(cat ./packages/*go)
+
+
+
+# # AUR Package manager
 sudo -u $MY_USERNAME ./aur-build.sh yay
 pacman -U ./yay-*.tar.zst --noconfirm
 rm yay-*.tar.zst
 
 
-# AUR Packages
+# # AUR Packages
 ./aurstrap.sh
 
-
 # Services
-for serv in dhcpcd lightdm reflector sshd syncthing
+for serv in SYSTEMD_SERVICES
 do
     if [ $(systemctl list-unit-files "${1}.service*" | wc -l) -gt 3 ]
     then
@@ -57,16 +74,6 @@ do
     fi
 done
 
-# Language Packages
-function ifexists {
-    command -v $1 >/dev/null 2>&1
-}
-ifexists fish && cat ./packages/*fisher | fish install
-ifexists npm && npm install --global $(cat ./packages/*npm)
-ifexists gem && gem install $(cat ./packages/*gem)
-ifexists pip && pip install $(cat ./packages/*pip)
-ifexists cargo && cargo install $(cat ./packages/*cargo)
-ifexists go && go install $(cat ./packages/*go)
 
 
 # Wrapping up
