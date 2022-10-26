@@ -13,7 +13,7 @@ cd /arch-install
 source ./environment.sh
 
 BOOTLOADER='systemd-boot'
-SYSTEMD_SERVICES='dhcpcd lightdm reflector sshd syncthing'
+SYSTEMD_SERVICES='dhcpcd lightdm onedriver reflector sshd syncthing'
 
 
 
@@ -46,13 +46,15 @@ echo "Installed $BOOTLOADER"
 function ifexists {
     command -v $1 >/dev/null 2>&1
 }
-ifexists fish && cat ./packages/*fisher | sudo -u $MY_USERNAME fish install
-ifexists npm && npm install --global $(cat ./packages/*npm)
-ifexists gem && gem install $(cat ./packages/*gem)
-ifexists pip && pip install $(cat ./packages/*pip)
-ifexists cargo && sudo -u $MY_USERNAME cargo install $(cat ./packages/*cargo)
-# TODO: Error: "go.mod file not found in current directory or any parent directory."
-ifexists go && sudo -u $MY_USERNAME go install $(cat ./packages/*go)
+function hasfiles {
+    ls ./packages/*.$1 >/dev/null 2>&1 &&
+}
+ifexists fish   && hasfiles fish    && cat ./packages/*fisher | sudo -u $MY_USERNAME fish install
+ifexists npm    && hasfiles npm     && npm install --global $(cat ./packages/*.npm | uniq)
+ifexists gem    && hasfiles gem     && gem install $(cat ./packages/.*gem | uniq)
+ifexists pip    && hasfiles pip     && pip install $(cat ./packages/*.pip | uniq)
+ifexists cargo  && hasfiles cargo   && sudo -u $MY_USERNAME cargo install $(cat ./packages/*.cargo | uniq)
+ifexists go     && hasfiles go      && sudo -u $MY_USERNAME go install $(cat ./packages/*.go | uniq)
 
 
 
