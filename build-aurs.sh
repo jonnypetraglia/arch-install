@@ -1,10 +1,22 @@
 #!/bin/env bash
+
 TARGET_FILE="$1"
+TARGET_DIR="$2"
+
 RUN_AS=$(whoami)
 if [ $(id -u) -eq 0 ]
 then
     RUN_AS=nobody
 fi
+
+function aurstrap {
+    if [ -z $TARGET_DIR ]
+    then
+        sudo -u $RUN_AS yay -S --noconfirm $1
+    else
+        sudo -u $RUN_AS yay -Sw --noconfirm $1 --builddir .
+    fi
+}
 
 
 targets=$(cut -d' ' -f1 $TARGET_FILE)
@@ -17,16 +29,16 @@ cd tmp
 
 for pkg in ${targets[@]}
 do
-    if ls ../aurstrap/$pkg*.tar.zst 1> /dev/null 2>&1
+    if ls $TARGET_DIR/$pkg*.tar.zst 1> /dev/null 2>&1
     then
         echo "Skipping $pkg"
         continue
     fi
     echo "Building $pkg"
-    yay -Sw --noconfirm $pkg --builddir .
+    aurstrap $pkg
     if ls $pkg/$pkg*.tar.zst 1> /dev/null 2>&1
     then
-        mv $pkg/$pkg*.tar.zst ../aurstrap
+        mv $pkg/$pkg*.tar.zst $TARGET_DIR
     fi
     rm -rf *
 done
