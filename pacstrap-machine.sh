@@ -7,19 +7,25 @@ then
     exit 403
 fi
 
-echo hi
-pwd
+cd /arch-install # TODO Get around this...
+source ./environment.sh
 
-source /arch-install/environment.sh
+if [ ! -f "machines/$MY_HOSTNAME" ]
+then
+    echo "No machine configuration found for $MY_HOSTNAME"
+    exit 404
+fi
 
 
 SOURCE_FILE="$1"
 
 echo "Pacstrapping from $SOURCE_FILE"
 for ext in pacman aur
-    for pkgfile in $(cut -d' ' -f1 $SOURCE_FILE | grep ".$ext$")
+do
+    echo "lol $ext"
+    for pkgfile in $(cut -d' ' -f1 $SOURCE_FILE)
     do
-        echo "Pacstrapping $pkgFile"
-        ./pacinstall.sh ./packages/$pkgFile
+        echo "Pacstrapping $pkgfile"
+        ./pacinstall.sh ./packages/$pkgfile
     done
 done

@@ -8,13 +8,14 @@ source /arch-install/environment.sh
 
 if [[ $TARGET_FILE == *aur ]]
 then
+    targets=$(cut -d' ' -f1 $TARGET_FILE)
     mkdir -p ./tmp_build
     rm -rf ./tmp_build
     mkdir -p ./tmp_build
     cd ./tmp_build
     chown nobody:nobody ./
     echo "Pacinstalling AUR targets inside $TARGET_FILE"
-    cut -d' ' -f1 $TARGET_FILE | while read $pkg
+    echo targets | while read $pkg
     do
         echo "Building $pkg"
         sudo -u nobody curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" -o PKGBUILD
@@ -25,5 +26,5 @@ then
     rm -rf tmp_build
 else
     echo "Pacinstalling Pacman packages inside $TARGET_FILE"
-    pacman -S $ROOT_FS $(cut -d' ' -f1 $TARGET_FILE) --needed --noconfirm
+    pacman -S $(cut -d' ' -f1 $TARGET_FILE) --needed --noconfirm
 fi
