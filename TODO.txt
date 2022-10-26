@@ -13,6 +13,10 @@ VS Code Extensions should be stored or synced from somewhere else.
 
 ### skel?
 
+Most certainly gotta be able to include those with dotfiles....
+
+...but need configurable services?
+
 
 
 ## Tinytim

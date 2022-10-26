@@ -201,12 +201,13 @@ generate_fstab
 
 echo 'Finished configuring system partitions!'
 
-./live.sh
+./prechroot.sh
 
 
 
 
-Next bit
 
-mkdir -p $ROOT_FS/boot/efi
-mount $EFI_PARTITION $ROOT_FS/boot/efi
+#  WHAT IS THIS DOWN HERE
+# Next bit
+# mkdir -p $ROOT_FS/boot/efi
+# mount $EFI_PARTITION $ROOT_FS/boot/efi

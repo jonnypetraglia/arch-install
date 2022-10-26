@@ -18,6 +18,7 @@ then
     exit 404
 fi
 
+# Pacstrap basic system
 pacman --needed -Sy archlinux-keyring --noconfirm
 pacman --needed -S arch-install-scripts --noconfirm
 pacstrap -K $ROOT_FS base linux linux-firmware

@@ -23,12 +23,14 @@ mkinitcpio -P
 bootctl install # systemd-boot
 
 # Services
-systemctl enable bluetooth.service
-systemctl enable dhcpcd.service
-systemctl enable lightdm.service
-systemctl enable reflector.service
-systemctl enable sshd.service
-systemctl enable syncthing.service
+function enableServiceIfExists {
+}
+for serv in dhcpcd lightdm reflector sshd syncthing
+    if [ $(systemctl list-unit-files "${1}.service*" | wc -l) -gt 3 ]
+        systemctl enable $1.service
+    then
+    fi
+done
 
 # Language Packages
 cat ./packages/*fisher | fish install
