@@ -1,3 +1,4 @@
+#!/bin/env bash
 if [ $(id -u) -ne 0 ]
 then
     echo'Script must be run as root'
@@ -28,7 +29,6 @@ systemctl enable lightdm.service
 systemctl enable reflector.service
 systemctl enable sshd.service
 systemctl enable syncthing.service
-
 
 # Language Packages
 cat ./packages/*fisher | fish install

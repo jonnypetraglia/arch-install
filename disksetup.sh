@@ -166,19 +166,19 @@ function create_partitions {
         echo 2      ## (Second partition)
         echo 19     ## (Linux Swap)
         echo w
-    )
+    ) | fdisk
 }
 function create_filesystems {
-    echo "Execute mkfs.${root_filesystem} ${selected_disk_name}1"
+    "mkfs.${root_filesystem}" "${selected_disk_name}1"
     case "$root_filesystem" in
         'btrfs')
-            echo "Execute btrfs filesystem label ${selected_disk_name}1 $MY_HOSTNAME"
+            btrfs filesystem label "${selected_disk_name}1" $MY_HOSTNAME
             ;;
         'ext4')
-            echo "Execute e2label ${selected_disk_name}1 $MY_HOSTNAME"
+            Execute e2label "${selected_disk_name}1" $MY_HOSTNAME
             ;;
     esac
-    echo "Execute mkfs.swap ${selected_disk_name}2"
+    mkfs.swap "${selected_disk_name}2"
 }
 
 
