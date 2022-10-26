@@ -20,9 +20,8 @@ FILESYSTEM_OPTIONS=('ext4' 'btrfs')
 disk_names=()
 selected_disk_name=''
 max_partition_size=0
-boot_partition_size=0
-root_partition_size=0
-# swap_partition_size=0 Not using for now, just using whatever is left
+boot_partition_size_mb=0
+root_partition_size_gb=0
 root_filesystem=''
 boot_partition=''
 root_partition=''
@@ -54,9 +53,9 @@ function select_disk {
         select_disk
     else
         selected_disk_name="${disk_names[$selected_disk_index]}"
-        $boot_partition = "${selected_disk_name}1"
-        $root_partition = "${selected_disk_name}2"
-        $swap_partition = "${selected_disk_name}3"
+        boot_partition="${selected_disk_name}1"
+        root_partition="${selected_disk_name}2"
+        swap_partition="${selected_disk_name}3"
         print_disk_info
     fi
 }
@@ -93,26 +92,36 @@ function start_partitions {
     get_swap_size
 }
 function get_boot_partition_size {
-    echo "Root partition size will be 512 MiB"
-    boot_partition_size=1 # Bash math can't do decimals, sigh
-    max_partition_size=$((max_partition_size - boot_partition_size))
-}
-function get_root_partition_size {
-    echo
-    read -p "How big should the root partition be in Gigabytes [1-$max_partition_size]: " root_partition_size
-    if [[ "$root_partition_size" != ?(-)+([0-9]) ]]
+    read -p "How big should the boot partition be in Megabytes [1-1000]: " boot_partition_size_mb
+    if [[ "$boot_partition_size_mb" != ?(-)+([0-9]) ]]
     then
         echo "Please enter a valid number"
         echo
-        select_disk
-    elif ! (( "1" <= "$root_partition_size" && "$root_partition_size" <= "$max_partition_size" ));
+        get_boot_partition_size
+    elif ! (( "1" <= "$boot_partition_size_mb" && "$boot_partition_size_mb" <= "1000" ));
+    then
+        echo "Please enter a size between 1 and 1000"
+        get_boot_partition_size
+    fi
+    max_partition_size=$((max_partition_size - 1))
+}
+function get_root_partition_size {
+    echo
+    read -p "How big should the root partition be in Gigabytes [1-$max_partition_size]: " root_partition_size_gb
+    if [[ "$root_partition_size_gb" != ?(-)+([0-9]) ]]
+    then
+        echo "Please enter a valid number"
+        echo
+        get_root_partition_size
+    elif ! (( "1" <= "$root_partition_size_gb" && "$root_partition_size_gb" <= "$max_partition_size" ));
     then
         echo "Please enter a size between 1 and $max_partition_size"
         get_root_partition_size
     fi
+    max_partition_size=$((max_partition_size - root_partition_size_gb))
 }
 function get_swap_size {
-    let "swap_partition_size = $max_partition_size - $root_partition_size "
+    let "swap_partition_size = $max_partition_size"
     echo "Swap partition size will be remaining (~$swap_partition_size GiB)"
 }
 
@@ -145,8 +154,8 @@ function confirm_final {
     echo
     echo "Creating GPT partition table on $selected_disk_name"
     echo "2 partitions:"
-    echo "  /boot  - $boot_partition_size MiB (FAT32)"
-    echo "  /      - $root_partition_size GiB ($root_filesystem)"
+    echo "  /boot  - $boot_partition_size_mb MiB (FAT32)"
+    echo "  /      - $root_partition_size_gb GiB ($root_filesystem)"
     echo "  swap - $swap_partition_size GiB"
     echo
     read -p "Write changes? (y/N) " should_create
@@ -179,7 +188,7 @@ function create_partitions {
         echo n      # add a new partition
         echo        ## (Partition number) - will default to 1
         echo        ## (First sector) - will default to start of disk
-        echo "+300m" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
+        echo "+${boot_partition_size_mb}m" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
         echo t      # change a partition type
         echo 1      ## (EFI System)
 
@@ -188,7 +197,7 @@ function create_partitions {
         # ?? p   primary partition? Doesn't seem to be needed when trying flash drive...
         echo        ## (Partition number) - will default to 2
         echo        ## (First sector) - will default to start of disk
-        echo "+${root_partition_size}g" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
+        echo "+${root_partition_size_gb}g" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
 
         # Swap
         echo n      # add a new partition
