@@ -20,10 +20,13 @@ FILESYSTEM_OPTIONS=('ext4' 'btrfs')
 disk_names=()
 selected_disk_name=''
 max_partition_size=0
+boot_partition_size=0
 root_partition_size=0
-# swap_partition_size=0 Not using for now, just using whatever is left after root partition
+# swap_partition_size=0 Not using for now, just using whatever is left
 root_filesystem=''
-
+boot_partition=''
+root_partition=''
+swap_partition=''
 
 ######### Selecting disk
 
@@ -51,6 +54,9 @@ function select_disk {
         select_disk
     else
         selected_disk_name="${disk_names[$selected_disk_index]}"
+        $boot_partition = "${selected_disk_name}1"
+        $root_partition = "${selected_disk_name}2"
+        $swap_partition = "${selected_disk_name}3"
         print_disk_info
     fi
 }
@@ -82,8 +88,14 @@ function print_disk_info {
 
 ######### Partitions
 function start_partitions {
+    get_boot_partition_size
     get_root_partition_size
     get_swap_size
+}
+function get_boot_partition_size {
+    echo "Root partition size will be 512 MiB"
+    boot_partition_size=1 # Bash math can't do decimals, sigh
+    max_partition_size=$((max_partition_size - boot_partition_size))
 }
 function get_root_partition_size {
     echo
@@ -133,7 +145,8 @@ function confirm_final {
     echo
     echo "Creating GPT partition table on $selected_disk_name"
     echo "2 partitions:"
-    echo "    /  - $root_partition_size GiB ($root_filesystem)"
+    echo "  /boot  - $boot_partition_size MiB (FAT32)"
+    echo "  /      - $root_partition_size GiB ($root_filesystem)"
     echo "  swap - $swap_partition_size GiB"
     echo
     read -p "Write changes? (y/N) " should_create
@@ -159,47 +172,61 @@ function create_partitions {
     # https://superuser.com/questions/332252/how-to-create-and-format-a-partition-using-a-bash-script
     (
         echo g      # create a new empty GPT partition table
+    ) | fdisk $selected_disk_name
+    echo "Created new Partition Table on $selected_disk_name"
+    (
+        # Boot
+        echo n      # add a new partition
+        echo        ## (Partition number) - will default to 1
+        echo        ## (First sector) - will default to start of disk
+        echo "+300m" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
+        echo t      # change a partition type
+        echo 1      ## (EFI System)
 
         # Root
         echo n      # add a new partition
         # ?? p   primary partition? Doesn't seem to be needed when trying flash drive...
-        echo        ## (Partition number) - will default to 1
+        echo        ## (Partition number) - will default to 2
         echo        ## (First sector) - will default to start of disk
         echo "+${root_partition_size}g" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
 
         # Swap
         echo n      # add a new partition
-        echo        ## (Partition number) - will default to 2
+        echo        ## (Partition number) - will default to 3
         echo        ## (First sector) - will default to end of root partition
         ## could use +${swap_partition_size}g but meh, just use rest of disk
         echo        ## (Last sector, +/-sectors or +/-size{K,M,G,T,P}) - rest of disk
         echo t      # change a partition type
-        echo 2      ## (Second partition)
+        echo        ## (Partition number) - will default to 3
         echo 19     ## (Linux Swap)
         echo w
     ) | fdisk $selected_disk_name
 }
 function create_filesystems {
-    echo "Creating filesystems"
-    "mkfs.${root_filesystem}" "${selected_disk_name}1" -F
-    echo "Setting labels?"
+    echo 'Creating filesystem for Boot partition'
+    mkfs.fat -F32 $boot_partition
+    echo "Creating filesystem for Root partition"
+    "mkfs.${root_filesystem}" $root_partition -F
     case "$root_filesystem" in
         'btrfs')
-            btrfs filesystem label "${selected_disk_name}1" $MY_HOSTNAME
+            btrfs filesystem label $root_partition $MY_HOSTNAME
             ;;
         'ext4')
-            e2label "${selected_disk_name}1" $MY_HOSTNAME
+            e2label $root_partition $MY_HOSTNAME
             ;;
     esac
-    mkswap "${selected_disk_name}2"
+    mkswap $swap_partition
 }
 
 
 ######### Post-steps
 function mount_filesystems {
     echo "Mounting new filesystems"
-    mount "${selected_disk_name}1" $ROOT_FS
-    swapon "${selected_disk_name}2"
+    mkdir -p $ROOT_FS
+    mount $root_partition $ROOT_FS
+    mkdir $ROOT_FS/boot
+    mount $boot_partition $ROOT_FS/boot
+    swapon $swap_partition
 }
 function generate_fstab {
     echo "Generating $ROOT_FS/etc/fstab"

@@ -15,17 +15,17 @@ BOOTLOADER='systemd-boot'
 
 
 
-# Packages
-/arch-install/pacstrap-machine.sh "/arch-install/machines/$MY_HOSTNAME"
+# # Packages
+# /arch-install/pacstrap-machine.sh "/arch-install/machines/$MY_HOSTNAME"
 
-# Timezone
-hwclock --systohc
+# # Timezone
+# hwclock --systohc
 
-# Localization
-locale-gen
+# # Localization
+# locale-gen
 
-# Initramfs
-mkinitcpio -P
+# # Initramfs
+# mkinitcpio -P
 
 # Bootloader
 case "$BOOTLOADER" in
