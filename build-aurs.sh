@@ -23,12 +23,11 @@ do
         continue
     fi
     echo "Building $pkg"
-    curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" -o PKGBUILD
-    sudo -u $RUN_AS makepkg
-    # if [ $? -eq 0]
-    # then
-        mv *.tar.zst ../aurstrap
-    # fi
+    yay -Sw --noconfirm $pkg --builddir .
+    if ls $pkg/$pkg*.tar.zst 1> /dev/null 2>&1
+    then
+        mv $pkg/$pkg*.tar.zst ../aurstrap
+    fi
     rm -rf *
 done
 cd ../

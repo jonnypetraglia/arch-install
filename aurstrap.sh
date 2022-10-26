@@ -4,13 +4,20 @@ set -o pipefail
 
 # source ./environment.sh
 
+MY_HOSTNAME="$1"
+
 THIS_DIR="${BASH_SOURCE[0]%/*}"
 
-# echo "Aurstrapping for $MY_HOSTNAME"
-# for pkgfile in $(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".aur$")
-for pkgfile in $(ls $THIS_DIR/packages/*.aur)
+if [ -z "$MY_HOSTNAME"]
+then
+    pkgfiles=$(ls -d $THIS_DIR/packages/*.aur)
+else
+    echo "Aurstrapping for $MY_HOSTNAME"
+    pkgfiles=$(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".aur$")
+fi
+
+for pkgfile in ${pkgfiles[@]}
 do
     echo "Aurstrapping $pkgfile"
-    # $THIS_DIR/build-aurs.sh $THIS_DIR/packages/$pkgfile
     $THIS_DIR/build-aurs.sh $pkgfile
 done
