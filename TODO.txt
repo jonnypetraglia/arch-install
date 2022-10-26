@@ -11,6 +11,9 @@ How to do dotfiles like fish and such?
 VS Code Extensions should be stored or synced from somewhere else.
 
 
+Selecting a disk that is mounted should throw an error or unmount all partitions on it
+
+
 ### skel?
 
 Most certainly gotta be able to include those with dotfiles....

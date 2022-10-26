@@ -7,6 +7,9 @@ then
     exit 403
 fi
 
+echo hi
+pwd
+
 source ./environment.sh
 
 
