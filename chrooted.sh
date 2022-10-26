@@ -11,6 +11,10 @@ fi
 
 source ./environment.sh
 
+BOOTLOADER='systemd-boot'
+
+
+
 # Packages
 /arch-install/pacstrap-machine.sh "/arch-install/machines/$MY_HOSTNAME"
 
@@ -24,11 +28,19 @@ locale-gen
 mkinitcpio -P
 
 # Bootloader
-bootctl install # systemd-boot
+case "$BOOTLOADER" in
+    'systemd-boot')
+        bootctl install
+        ;;
+    'grub')
+        pacman -S grub os-prober
+        grub-mkconfig -o /boot/grub/grub.cfg
+        grub-install $(mount | grep ' on / ' | cut -d' ' -f1) # TODO: On root
+        e2label "${selected_disk_name}1" $MY_HOSTNAME
+        ;;
+esac
 
 # Services
-function enableServiceIfExists {
-}
 for serv in dhcpcd lightdm reflector sshd syncthing
     if [ $(systemctl list-unit-files "${1}.service*" | wc -l) -gt 3 ]
         systemctl enable $1.service
