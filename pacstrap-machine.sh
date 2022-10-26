@@ -1,14 +1,11 @@
 #!/bin/env bash
 set -e
 set -o pipefail
-if [ $(id -u) -ne 0 ]
-then
-    echo 'Script must be run as root'
-    exit 403
-fi
 
 cd /arch-install # TODO Get around this...
-source ./environment.sh
+
+MY_HOSTNAME="$1"
+
 
 if [ ! -f "machines/$MY_HOSTNAME" ]
 then
@@ -16,16 +13,9 @@ then
     exit 404
 fi
 
-
-SOURCE_FILE="$1"
-
-echo "Pacstrapping from $SOURCE_FILE"
-for ext in pacman aur
+echo "Pacstrapping for $MY_HOSTNAME"
+for pkgfile in $(cut -d' ' -f1 machines/$MY_HOSTNAME)
 do
-    echo "lol $ext"
-    for pkgfile in $(cut -d' ' -f1 $SOURCE_FILE)
-    do
-        echo "Pacstrapping $pkgfile"
-        ./pacinstall.sh ./packages/$pkgfile
-    done
+    echo "Pacstrapping $pkgfile"
+    ./pacinstall.sh ./packages/$pkgfile
 done

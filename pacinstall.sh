@@ -3,28 +3,38 @@ set -e
 set -o pipefail
 
 TARGET_FILE="$1"
-source /arch-install/environment.sh
 
+whoami
+exit 0
 
 if [[ $TARGET_FILE == *aur ]]
 then
-    targets=$(cut -d' ' -f1 $TARGET_FILE)
-    mkdir -p ./tmp_build
-    rm -rf ./tmp_build
-    mkdir -p ./tmp_build
-    cd ./tmp_build
-    chown nobody:nobody ./
     echo "Pacinstalling AUR targets inside $TARGET_FILE"
-    echo targets | while read $pkg
+    targets=$(cut -d' ' -f1 $TARGET_FILE)
+    echo "Targets: $targets"
+    mkdir -p /tmp/install
+    echo dir made
+    rm -rf /tmp/install
+    echo dir destroyed
+    mkdir -p /tmp/install
+    echo dir made
+    chown nobody:nobody /tmp/install
+    echo chowned
+    cd /tmp/install
+    echo "In $(pwd)"
+    for pkg in "${targets[@]}"
     do
         echo "Building $pkg"
-        sudo -u nobody curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" -o PKGBUILD
-        sudo -u nobody makepkg -i
+        curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" -o PKGBUILD
         echo "Build $pkg"
+        sudo -u nobody makepkg
+        echo "Installing $pkg"
+        sudo pacman -U *.tar.*
+        rm -rf *
     done
     cd ../
-    rm -rf tmp_build
+    rm -rf /tmp/install
 else
     echo "Pacinstalling Pacman packages inside $TARGET_FILE"
-    pacman -S $(cut -d' ' -f1 $TARGET_FILE) --needed --noconfirm
+    sudo pacman -S $(cut -d' ' -f1 $TARGET_FILE) --needed --noconfirm
 fi

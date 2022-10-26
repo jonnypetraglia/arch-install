@@ -12,9 +12,7 @@ fi
 source ./environment.sh
 
 # Copy install scripts into new system
-rm -rf $ROOT_FS/arch-install
-mkdir -p $ROOT_FS/arch-install
-cp -r * $ROOT_FS/arch-install
+./copyme.sh
 
 # Pacstrap basic system
 pacman --needed -Sy archlinux-keyring --noconfirm
@@ -56,8 +54,6 @@ echo "fs.inotify.max_user_watches=1000000" >> $ROOT_FS/etc/sysctl.d/90-override.
 
 # TODO dotfiles here?
 
-
-# Packages
 
 echo "Live CD portion complete. Run 'arch-chroot $ROOT_FS' then '/arch-install/chrooted.sh' to continue."
 

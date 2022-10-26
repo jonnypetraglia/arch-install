@@ -70,20 +70,21 @@ function print_disk_info {
     echo "Model:    $disk_model"
     echo "Size:     $disk_size"
     
-    if [[ "$disk_info" =~ .*"^/dev/".* ]]; then
+
+    echo
+    echo "$disk_info"
+    echo
+    if [[ $disk_info =~ "$boot_partition" ]]; then
         partitions=( $(echo "$disk_info" | grep '^/dev/'))
+        echo "WARNING: Disk has ${#partitions[@]} existing partition(s). All data will be lost."
         if [[ "${#partitions[@]}" -gt 0 ]]
         then
-            echo "WARNING: Disk has ${#partitions[@]} existing partition(s). All data will be lost."
+            echo "ERROR: Delete all partitions on selected_disk_name before proceeding"
+            exit 500
         fi
     fi
 
     max_partition_size=$(echo "$disk_size" | cut -d ' ' -f1 | cut -d '.' -f1)  # TODO: This won't work if the disk is in TiB
-    if (( "${#partitions[@]}" > 0))
-    then
-        echo "ERROR: Delete all partitions on selected_disk_name before proceeding"
-        exit 500
-    fi
     # for partition in "${partitions[@]}"
     # do
     #     echo "$partition"
@@ -262,15 +263,4 @@ confirm_final
 mount_filesystems
 generate_fstab
 
-echo 'Finished configuring system partitions!'
-
-./prechroot.sh
-
-
-
-
-
-#  WHAT IS THIS DOWN HERE
-# Next bit
-# mkdir -p $ROOT_FS/boot/efi
-# mount $EFI_PARTITION $ROOT_FS/boot/efi
+echo 'Finished configuring system partitions! Run prechroot.sh to continue'

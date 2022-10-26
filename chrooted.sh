@@ -16,9 +16,6 @@ BOOTLOADER='systemd-boot'
 
 
 
-# # Packages
-/arch-install/pacstrap-machine.sh "/arch-install/machines/$MY_HOSTNAME"
-
 # # Timezone
 hwclock --systohc
 
@@ -40,6 +37,12 @@ case "$BOOTLOADER" in
         e2label "${selected_disk_name}1" $MY_HOSTNAME
         ;;
 esac
+
+
+
+# Packages
+cd /home/$MY_HOSTNAME
+sudo -u $MY_HOSTNAME /arch-install/pacstrap-machine.sh $MY_HOSTNAME
 
 # Services
 for serv in dhcpcd lightdm reflector sshd syncthing
