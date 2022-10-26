@@ -32,13 +32,24 @@ This will:
 
 Before chrooting into the new system, set some config for the new system.
 
-  - Timezone
-  - Localization
+  - Timezone & Localization
   - Network Configuration
   - Users (root and MY_USERNAME inside environment.sh)
   - Pacstraps all packages for machine - both Pacman & AUR
+  - Misc system tweaks
 
 ## 3. chroot.sh
 
 To be run while inside the chroot (i.e. `arch-chroot $ROOT_FS chroot.sh`).
 
+  - Timezone & Localization
+  - Runs Initramfs
+  - Installs bootloader (systemd-boot)
+  - Enables services
+  - Installs other package managers' packages
+    - Fisher (fish)
+    - NPM (Node.js)
+    - Gem (Ruby)
+    - Pip (Python)
+    - Cargo (Rust)
+    - Go
