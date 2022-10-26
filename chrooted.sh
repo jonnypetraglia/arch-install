@@ -41,7 +41,9 @@ esac
 
 
 # AUR Packages
-pacman -U /install-packages/*
+./aurstrap.sh $MY_HOSTNAME
+# Or if they were generated ahead of time (WIP) this:
+# pacman -U ./aurstrap
 
 # Services
 for serv in dhcpcd lightdm reflector sshd syncthing
