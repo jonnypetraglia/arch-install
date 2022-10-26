@@ -16,13 +16,13 @@ BOOTLOADER='systemd-boot'
 
 
 
-# # Timezone
+# Timezone
 hwclock --systohc
 
-# # Localization
+# Localization
 locale-gen
 
-# # Initramfs
+# Initramfs
 mkinitcpio -P
 
 # Bootloader
