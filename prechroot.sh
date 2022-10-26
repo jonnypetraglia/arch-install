@@ -19,6 +19,13 @@ pacman --needed -Sy archlinux-keyring --noconfirm
 pacman --needed -S arch-install-scripts --noconfirm
 pacstrap -K $ROOT_FS base linux linux-firmware
 
+# Pacstrap machine-specific system
+for pkgfile in $(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".pacman^")
+do
+    echo "Pacstrapping $pkgfile"
+    pacman -K $ROOT_FS $(cut -d' ' -f1 $TARGET_FILE) --needed --noconfirm
+done
+
 # Timezone
 ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE $ROOT_FS/etc/localtime
 

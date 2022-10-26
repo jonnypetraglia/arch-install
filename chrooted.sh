@@ -40,9 +40,8 @@ esac
 
 
 
-# Packages
-cd /home/$MY_HOSTNAME
-sudo -u $MY_HOSTNAME /arch-install/pacstrap-machine.sh $MY_HOSTNAME
+# AUR Packages
+pacman -U /install-packages/*
 
 # Services
 for serv in dhcpcd lightdm reflector sshd syncthing

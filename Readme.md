@@ -15,9 +15,12 @@ Entirely bash. Ugh.
 
 # Installing
 
+
 ## 0. environment.sh
 
 Edit before running. MY_HOSTNAME _must_ have a corresponding file in the machines directory.
+
+After editing this, run `aurstrap.sh machines/$MY_USERNAME /path/to/live/usb/aur-packages`
 
 ## 1. disksetup.sh
 

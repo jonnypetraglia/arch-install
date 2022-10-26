@@ -7,3 +7,4 @@ mkdir -p $ROOT_FS/arch-install
 cp -r * $ROOT_FS/arch-install
 
 chmod 777 -R $ROOT_FS/arch-install
+
