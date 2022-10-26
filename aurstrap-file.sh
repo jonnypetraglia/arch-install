@@ -12,10 +12,12 @@ fi
 
 function aurstrap {
     touch .
-    if $BUILD_ONLY
+    if [ -z "$TARGET_DIR" ]
     then
+        echo "Installing $1"
         sudo -u $RUN_AS yay -S --noconfirm $1 --needed
     else
+        echo "Building $1"
         sudo -u $RUN_AS yay -Sw --noconfirm $1 --builddir .
     fi
 }
@@ -36,7 +38,6 @@ do
         echo "Skipping $pkg"
         continue
     fi
-    echo "Building $pkg"
     aurstrap $pkg
     if ls $pkg/$pkg*.tar.zst 1> /dev/null 2>&1
     then
