@@ -3,3 +3,8 @@ aur.aur
 desktop.cli.pacman
 desktop.i3.pacman
 system.fonts.aur
+dhcpcd.service
+ly.service
+reflector.service
+sshd.service
+syncthing.service

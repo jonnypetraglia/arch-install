@@ -13,3 +13,8 @@ system.gui.pacman
 system.pacman
 system.services.pacman
 system.aur
+dhcpcd.service
+lightdm.service
+reflector.service
+sshd.service
+syncthing.service

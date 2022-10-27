@@ -47,17 +47,9 @@ xdg-settings set default-web-browser min.desktop
 
 starch needs `exec i3` inside ~/.xinitrc
 
-ly.service
-
 Script for running pipes: `pipes-rs -c rgb -d 25 -k light,heavy,curved,knobby`
 
 
-
-
-
-## After first attempt:
-    - Finish partition part of manual.txt
-    - if live.sh worked, test calling chrooted.sh using arch-chroot
 
 ## Bonus
     - greeter-session inside /etc/lightdm/lightdm.conf ?

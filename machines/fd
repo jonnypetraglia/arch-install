@@ -13,3 +13,9 @@ system.gui.pacman
 system.pacman
 system.services.pacman
 system.aur
+dhcpcd.service
+lightdm.service
+onedriver.service
+reflector.service
+sshd.service
+syncthing.service

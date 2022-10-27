@@ -9,12 +9,10 @@ fi
 
 ###### Post-arch-chroot ######
 
-cd /arch-install
+# cd /arch-install
 source ./environment.sh
 
 BOOTLOADER='systemd-boot'
-SYSTEMD_SERVICES='dhcpcd lightdm onedriver reflector sshd syncthing'
-
 
 
 # Timezone
@@ -68,7 +66,8 @@ rm yay-*.tar.zst
 ./aurstrap.sh
 
 # Services
-for serv in SYSTEMD_SERVICES
+SYSTEMD_SERVICES=$(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".service$")
+for serv in ${SYSTEMD_SERVICES[@]}
 do
     if [ $(systemctl list-unit-files "${1}.service*" | wc -l) -gt 3 ]
     then
