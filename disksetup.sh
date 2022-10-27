@@ -70,25 +70,28 @@ function print_disk_info {
     echo "Model:    $disk_model"
     echo "Size:     $disk_size"
     
-
-    echo
-    echo "$disk_info"
-    echo
-    if [[ $disk_info =~ "$boot_partition" ]]; then
-        partitions=( $(echo "$disk_info" | grep '^/dev/'))
-        echo "WARNING: Disk has ${#partitions[@]} existing partition(s). All data will be lost."
-        if [[ "${#partitions[@]}" -gt 0 ]]
-        then
-            echo "ERROR: Delete all partitions on selected_disk_name before proceeding"
-            exit 500
-        fi
-    fi
-
     max_partition_size=$(echo "$disk_size" | cut -d ' ' -f1 | cut -d '.' -f1)  # TODO: This won't work if the disk is in TiB
-    # for partition in "${partitions[@]}"
-    # do
-    #     echo "$partition"
-    # done
+
+    if [[ $disk_info =~ "$boot_partition" ]]; then
+        existing_partitions=( $(echo "$disk_info" | grep '^/dev/' | cut -d' ' -f1))
+        echo "WARNING: Disk has ${#existing_partitions[@]} existing partition(s). All data will be lost."
+        confirm_delete_partitions
+    fi
+}
+function confirm_delete_partitions {
+    echo
+    read -p 'Unmount and delete partitions? (y/N) ' should_delete
+    if [[ "$should_delete" == [Yy] ]]
+    then
+        echo
+        echo 'Existing partitions will be deleted after final confirmation.'
+    elif [[ "$should_delete" == [Nn] ]]
+    then
+        select_disk
+    else
+        echo 'Please enter Y or N'
+        confirm_delete_partitions
+    fi
 }
 
 ######### Partitions
@@ -98,8 +101,13 @@ function start_partitions {
     get_swap_size
 }
 function get_boot_partition_size {
-    read -p "How big should the boot partition be in Megabytes [1-1000]: " boot_partition_size_mb
-    if [[ "$boot_partition_size_mb" != ?(-)+([0-9]) ]]
+    echo
+    read -p "How big should the boot partition be in Megabytes? (1-1000, default: 512) " boot_partition_size_mb
+    if [ "$boot_partition_size_mb" == "" ]
+    then
+        boot_partition_size_mb=512
+        echo "Defaulting to $boot_partition_size_mb MiB"
+    elif [[ "$boot_partition_size_mb" != ?(-)+([0-9]) ]]
     then
         echo "Please enter a valid number"
         echo
@@ -110,10 +118,12 @@ function get_boot_partition_size {
         get_boot_partition_size
     fi
     max_partition_size=$((max_partition_size - 1))
+    echo
+    echo "Remaining space: $max_partition_size Gib"
 }
 function get_root_partition_size {
     echo
-    read -p "How big should the root partition be in Gigabytes [1-$max_partition_size]: " root_partition_size_gb
+    read -p "How big should the root partition be in Gigabytes? (1-$max_partition_size) " root_partition_size_gb
     if [[ "$root_partition_size_gb" != ?(-)+([0-9]) ]]
     then
         echo "Please enter a valid number"
@@ -125,6 +135,7 @@ function get_root_partition_size {
         get_root_partition_size
     fi
     max_partition_size=$((max_partition_size - root_partition_size_gb))
+    echo "Remaining space: $max_partition_size Gib"
 }
 function get_swap_size {
     let "swap_partition_size = $max_partition_size"
@@ -143,12 +154,10 @@ function start_filesystems {
     if [[ "$root_filesystem_selection" != ?(-)+([0-9]) ]]
     then
         echo "Please enter a valid number"
-        echo
         start_filesystems
     elif ! (( "0" <= "$root_filesystem_selection" && "$root_filesystem_selection" < "${#FILESYSTEM_OPTIONS[@]}" ));
     then
         echo "Invalid selection"
-        echo
         start_filesystems
     else
         root_filesystem="${FILESYSTEM_OPTIONS[$root_filesystem_selection]}"
@@ -159,27 +168,66 @@ function start_filesystems {
 function confirm_final {
     echo
     echo "Creating GPT partition table on $selected_disk_name"
-    echo "2 partitions:"
+    if [ "${#existing_partitions[@]}" -gt "0" ]
+    then
+        echo "Deleting ${#existing_partitions[@]} existing partitions"
+    fi
+    echo "Creating partitions:"
     echo "  /boot  - $boot_partition_size_mb MiB (FAT32)"
     echo "  /      - $root_partition_size_gb GiB ($root_filesystem)"
     echo "  swap - $swap_partition_size GiB"
     echo
     read -p "Write changes? (y/N) " should_create
+    echo $should_create
     if [[ "$should_create" == [Yy] ]]
     then
+        echo 'Yes'
         write_everything
     elif [[ "$should_create" == [Nn] ]]
     then
-        print_disk_info
-        start_partitions
+        echo 'No'
+        select_disk
     else
         echo 'Please enter Y or N'
         confirm_final
     fi
 }
 function write_everything {
+    if [ "${#existing_partitions[@]}" -gt 0 ]
+    then
+        delete_existing_partitions
+    fi
     create_partitions
     create_filesystems
+}
+function delete_existing_partitions {
+    echo
+    echo 'getting mounts'
+    mounts=$(mount | grep '^/dev' || true)
+    swaps=$(swapon | grep '^/dev' || true)
+    echo "Mounts $mounts"
+    echo "Swaps $swaps"
+    for partition in "${existing_partitions[@]}"
+    do
+        echo "Deleting $partition"
+        if [[ "$mounts" == *"$partition"* ]]
+        then
+            echo "$mounts" contains $partition
+            umount $partition
+            echo "Unmounted $partition"
+        fi
+        if [[ "$swaps" == *"$partition"* ]]
+        then
+            echo "$swaps" contains $partition
+            swapoff $partition
+            echo "Swap $partition is off"
+        fi
+    done
+    (
+        echo $(printf 'd\n\n%.0s' {1..${#existing_partitions[@]}})
+        echo 'w'
+    ) | fdisk $selected_disk_name
+    echo "Deleted ${#existing_partitions[@]} partitions."
 }
 function create_partitions {
     echo
@@ -263,4 +311,7 @@ confirm_final
 mount_filesystems
 generate_fstab
 
+echo
+echo
+echo
 echo 'Finished configuring system partitions! Run prechroot.sh to continue'
