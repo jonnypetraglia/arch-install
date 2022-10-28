@@ -3,6 +3,15 @@ set -e
 set -o pipefail
 
 ./disksetup.sh
-./copyme.sh
+echo 'Disk setup complete!'
+
+
+read -pr 'Press any key to run pre-chroot setup...'
+clear
 ./prechroot.sh
-arch-chroot $ROOT_FS /arch-install/chrooted.sh
+echo 'Pre-chroot setup complete!'
+
+
+read -pr 'Press any key to run the chrooted setup...'
+clear
+./chroot.sh

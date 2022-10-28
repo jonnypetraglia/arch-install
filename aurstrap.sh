@@ -24,5 +24,4 @@ for pkgfile in ${pkgfiles[@]}
 do
     echo "Aurstrapping $pkgfile"
     sudo -u $MY_USERNAME $THIS_DIR/aurstrap-file.sh $THIS_DIR/packages/$pkgfile $TARGET_DIR
-    break
 done

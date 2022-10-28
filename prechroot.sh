@@ -15,17 +15,10 @@ source ./environment.sh
 ./copyme.sh
 
 # Pacstrap basic system
-pacman --needed -Sy archlinux-keyring --noconfirm
-pacman --needed -S arch-install-scripts --noconfirm
-pacstrap -K $ROOT_FS base linux linux-firmware
-
-# Pacstrap machine-specific system
-for pkgfile in $(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".pacman^")
-do
-    echo "Pacstrapping $pkgfile"
-    pacman -K $ROOT_FS $(cut -d' ' -f1 $TARGET_FILE) --needed --noconfirm
-done
-
+pacman -Sy
+pacman -S archlinux-keyring --needed --noconfirm
+pacman -S arch-install-scripts --needed --noconfirm
+pacstrap $ROOT_FS base linux linux-firmware
 
 # Timezone
 ln -sf /usr/share/zoneinfo/US/$MY_TIMEZONE $ROOT_FS/etc/localtime
@@ -48,9 +41,9 @@ echo "$MY_USERNAME:x:1000:1000::/home/$MY_USERNAME:/usr/bin/fish" >> $ROOT_FS/et
 echo "$MY_USERNAME:x:1000:" >> $ROOT_FS/etc/group
 
 echo "root:$ROOT_PASSWORD_ENC:19085::::::" > $ROOT_FS/etc/shadow
-echo "$MY_USERNAME:$MY_PASSWORD_ENC:19245:0:99999:7:::" > $ROOT_FS/etc/shadow
-echo "$MY_USERNAME:!::" > $ROOT_FS/etc/gshadow
-echo "sambashare:!::$MY_USERNAME" > $ROOT_FS/etc/gshadow
+echo "$MY_USERNAME:$MY_PASSWORD_ENC:19245:0:99999:7:::" >> $ROOT_FS/etc/shadow
+echo "$MY_USERNAME:!::" >> $ROOT_FS/etc/gshadow
+echo "sambashare:!::$MY_USERNAME" >> $ROOT_FS/etc/gshadow
 
 echo "root  ALL=(ALL:ALL)   ALL" > $ROOT_FS/etc/sudoers
 echo "$MY_USERNAME  ALL=(ALL:ALL)   ALL" >> $ROOT_FS/etc/sudoers
@@ -63,7 +56,4 @@ echo "fs.inotify.max_user_watches=1000000" >> $ROOT_FS/etc/sysctl.d/90-override.
 # TODO dotfiles here?
 
 
-echo "Live CD portion complete. Run 'arch-chroot $ROOT_FS' then '/arch-install/chrooted.sh' to continue."
-
-# arch-chroot $ROOT_FS /arch-install/chrooted.sh
-
+echo "Live CD portion complete. Run 'chroot.sh"

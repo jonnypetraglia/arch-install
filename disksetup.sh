@@ -13,7 +13,7 @@ source ./environment.sh
 
 IFS=$'\n'
 FILESYSTEM_OPTIONS=('ext4' 'btrfs')
-
+NO_CONFIRM=0
 
 ######### Variables that will be set
 
@@ -73,12 +73,15 @@ function print_disk_info {
     max_partition_size=$(echo "$disk_size" | cut -d ' ' -f1 | cut -d '.' -f1)  # TODO: This won't work if the disk is in TiB
 
     if [[ $disk_info =~ "$boot_partition" ]]; then
-        existing_partitions=( $(echo "$disk_info" | grep '^/dev/' | cut -d' ' -f1))
+        existing_partitions=( $(echo "$disk_info" | grep '^/dev/' | cut -d' ' -f1) )
         echo "WARNING: Disk has ${#existing_partitions[@]} existing partition(s). All data will be lost."
         confirm_delete_partitions
     fi
 }
 function confirm_delete_partitions {
+    # if NO_CONFIRM
+        # echo 'Existing partitions will be deleted after final confirmation.'
+        # return
     echo
     read -p 'Unmount and delete partitions? (y/N) ' should_delete
     if [[ "$should_delete" == [Yy] ]]
@@ -166,6 +169,9 @@ function start_filesystems {
 
 ######### Doooooooooooooooooooooo
 function confirm_final {
+    # if NO_CONFIRM
+    #     write_everything
+    #     return
     echo
     echo "Creating GPT partition table on $selected_disk_name"
     if [ "${#existing_partitions[@]}" -gt "0" ]
@@ -193,6 +199,7 @@ function confirm_final {
     fi
 }
 function write_everything {
+    echo $existing_partitions
     if [ "${#existing_partitions[@]}" -gt 0 ]
     then
         delete_existing_partitions
@@ -209,7 +216,6 @@ function delete_existing_partitions {
     echo "Swaps $swaps"
     for partition in "${existing_partitions[@]}"
     do
-        echo "Deleting $partition"
         if [[ "$mounts" == *"$partition"* ]]
         then
             echo "$mounts" contains $partition
@@ -224,7 +230,12 @@ function delete_existing_partitions {
         fi
     done
     (
-        echo $(printf 'd\n\n%.0s' {1..${#existing_partitions[@]}})
+        for (( i = 0; i <= ${#existing_partitions[@]}; i++ )) 
+        do
+            echo 'd'
+            echo
+            echo
+        done
         echo 'w'
     ) | fdisk $selected_disk_name
     echo "Deleted ${#existing_partitions[@]} partitions."

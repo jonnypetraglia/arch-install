@@ -6,6 +6,7 @@ then
     echo 'Script must be run as root'
     exit 403
 fi
+cd /arch-install
 
 ###### Post-arch-chroot ######
 
@@ -26,44 +27,79 @@ mkinitcpio -P
 
 # Bootloader
 echo "Installing $BOOTLOADER"
+function install_systemd {
+    bootctl install
+    (
+        echo "title Arch Linux"
+        echo 'linux /vmlinuz-linux'
+        echo 'initrd /initramfs-linux.img'
+        echo "root=PARTUUID=$(get_root_uuid)"
+    ) > /boot/loader/entries/$MY_HOSTNAME.conf
+    bootctl install
+    (
+        echo "title Arch Linux fallback"
+        echo 'linux /vmlinuz-linux'
+        echo 'initrd /initramfs-linux-fallback.img'
+        echo "root=PARTUUID=$(get_root_uuid)"
+    ) > /boot/loader/entries/$MY_HOSTNAME_fallback.conf
+}
+function get_root_uuid {
+    root_disk=$(mount | grep 'on / ' | cut -d' ' -f1)
+    blkid | grep "^$root_disk" | grep -oP 'PARTUUID="\K[^"]+'
+}
+function install_grub {
+    pacman -S grub os-prober --needed
+    grub-mkconfig -o /boot/grub/grub.cfg
+    grub-install $(mount | grep ' on /boot ' | cut -d' ' -f1)
+}
 case "$BOOTLOADER" in
     'systemd-boot')
-        bootctl install
+        install_systemd
         ;;
     'grub')
-        pacman -S grub os-prober
-        grub-mkconfig -o /boot/grub/grub.cfg
-        grub-install $(mount | grep ' on / ' | cut -d' ' -f1) # TODO: On root
-        e2label "${selected_disk_name}1" $MY_HOSTNAME
+        install_grub
         ;;
 esac
 echo "Installed $BOOTLOADER"
 
-# Language Packages
+# Pacstrap machine-specific system
+pacman-key --init
+pacman-key --populate
+for pkgfile in $(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".pacman$")
+do
+    pkgfile_pkgs=$(cut -d' ' -f1 packages/$pkgfile)
+    echo "Pacstrapping:" $pkgfile_pkgs
+    read -p 'Press any key to continue...'
+    pacman -S $pkgfile_pkgs --needed --noconfirm
+done
 
+# AUR Package manager
+pacman -S sudo --needed
+if [ ! -z "$(command -v yay)" ]
+then
+    echo "Installing Yay"
+    sudo -u $MY_USERNAME ./aur-build.sh yay
+    pacman -U ./yay-*.tar.zst --noconfirm
+    rm yay-*.tar.zst
+fi
+
+# AUR Packages
+./aurstrap.sh
+
+# Language Packages
 function ifexists {
     command -v $1 >/dev/null 2>&1
 }
-function hasfiles {
-    ls ./packages/*.$1 >/dev/null 2>&1 &&
+function haspackages {
+    ls ./packages/*.$1 >/dev/null 2>&1
 }
-ifexists fish   && hasfiles fish    && cat ./packages/*fisher | sudo -u $MY_USERNAME fish install
-ifexists npm    && hasfiles npm     && npm install --global $(cat ./packages/*.npm | uniq)
-ifexists gem    && hasfiles gem     && gem install $(cat ./packages/.*gem | uniq)
-ifexists pip    && hasfiles pip     && pip install $(cat ./packages/*.pip | uniq)
-ifexists cargo  && hasfiles cargo   && sudo -u $MY_USERNAME cargo install $(cat ./packages/*.cargo | uniq)
-ifexists go     && hasfiles go      && sudo -u $MY_USERNAME go install $(cat ./packages/*.go | uniq)
+ifexists fish   && haspackages fish     && cat ./packages/*fisher | sudo -u $MY_USERNAME fish install
+ifexists npm    && haspackages npm      && npm install --global $(cat ./packages/*.npm | uniq)
+ifexists gem    && haspackages gem      && gem install $(cat ./packages/.*gem | uniq)
+ifexists pip    && haspackages pip      && pip install $(cat ./packages/*.pip | uniq)
+ifexists cargo  && haspackages cargo    && sudo -u $MY_USERNAME cargo install $(cat ./packages/*.cargo | uniq)
+ifexists go     && haspackages go       && sudo -u $MY_USERNAME go install $(cat ./packages/*.go | uniq)
 
-
-
-# # AUR Package manager
-sudo -u $MY_USERNAME ./aur-build.sh yay
-pacman -U ./yay-*.tar.zst --noconfirm
-rm yay-*.tar.zst
-
-
-# # AUR Packages
-./aurstrap.sh
 
 # Services
 SYSTEMD_SERVICES=$(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".service$")

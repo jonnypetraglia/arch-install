@@ -1,12 +1,20 @@
 
 Is EFI right? Is it booting?
 
-Selecting a disk that is mounted should throw an error or unmount all partitions on it
-
 go package install not working...
 
 What do if aur package is broken?
     Maybe have a .broken file that I can add to on the fly; anything in it is ignored?
+
+
+if systemd-boot create an entry!!!
+
+
+
+VBoxManage setextradata "jny" GUI/MouseCapturePolicy Disabled
+
+
+need fakeroot?
 
 
 
