@@ -1,0 +1,154 @@
+
+0) /dev/sda
+1) /dev/loop0
+
+selected /dev/sda
+
+Disk:     /dev/sda
+Model:    VBOX HARDDISK
+Size:     32 GiB
+WARNING: Disk has 3 existing partition(s). All data will be lost.
+
+
+Existing partitions will be deleted after final confirmation.
+
+Defaulting to 512 MiB
+
+Remaining space: 31 Gib
+
+Remaining space: 5 Gib
+Swap partition size will be remaining (~5 GiB)
+
+0) ext4
+1) btrfs
+
+
+Creating GPT partition table on /dev/sda
+Deleting 3 existing partitions
+Creating partitions:
+  /boot  - 512 MiB (FAT32)
+  /      - 26 GiB (ext4)
+  swap - 5 GiB
+
+y
+Yes
+/dev/sda1
+
+getting mounts
+
+Welcome to fdisk (util-linux 2.38).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): Partition number (1-3, default 3): 
+Partition 3 has been deleted.
+
+Command (m for help): 
+Command (m for help): Partition number (1,2, default 2): 
+Partition 2 has been deleted.
+
+Command (m for help): 
+Command (m for help): 
+Selected partition 1
+Partition 1 has been deleted.
+
+Command (m for help): 
+Command (m for help): 
+Command (m for help): 
+Command (m for help): 
+Command (m for help): 
+Command (m for help): 
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+Deleted 3 partitions.
+
+Creating partitions
+
+Welcome to fdisk (util-linux 2.38).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): Created a new GPT disklabel (GUID: 2148046A-2AC0-F64F-933B-2A369EBCA5C8).
+
+Command (m for help): The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+Created new Partition Table on /dev/sda
+
+Welcome to fdisk (util-linux 2.38).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): Partition number (1-128, default 1): First sector (2048-67108830, default 2048): Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-67108830, default 67106815): 
+Created a new partition 1 of type 'Linux filesystem' and of size 512 MiB.
+
+Command (m for help): 
+Selected partition 1
+Partition type or alias (type L to list all): Changed type of partition 'Linux filesystem' to 'EFI System'.
+
+Command (m for help): The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+Created boot partition at /dev/sda1
+
+Welcome to fdisk (util-linux 2.38).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): Partition number (2-128, default 2): First sector (1050624-67108830, default 1050624): Last sector, +/-sectors or +/-size{K,M,G,T,P} (1050624-67108830, default 67106815): 
+Created a new partition 2 of type 'Linux filesystem' and of size 26 GiB.
+
+Command (m for help): 
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+Created boot partition at /dev/sda2
+
+Welcome to fdisk (util-linux 2.38).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): Partition number (3-128, default 3): First sector (55576576-67108830, default 55576576): Last sector, +/-sectors or +/-size{K,M,G,T,P} (55576576-67108830, default 67106815): 
+Created a new partition 3 of type 'Linux filesystem' and of size 5.5 GiB.
+
+Command (m for help): Partition number (1-3, default 3): Partition type or alias (type L to list all): 
+Changed type of partition 'Linux filesystem' to 'Linux swap'.
+
+Command (m for help): The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+Created swap partition at /dev/sda3
+Creating filesystem for Boot partition at /dev/sda1
+mkfs.fat 4.2 (2021-01-31)
+Creating filesystem for Root partition at /dev/sda2
+Creating filesystem with 6815744 4k blocks and 1703936 inodes
+Filesystem UUID: 5f86b28a-c744-4dc1-a2f5-8ec7c3b68a4a
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000
+
+Allocating group tables:   0/208       done                            
+Writing inode tables:   0/208       done                            
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information:   0/208       done
+
+Creating Swap at /dev/sda3
+Setting up swapspace version 1, size = 5.5 GiB (5903478784 bytes)
+no label, UUID=f48ee158-9078-4946-bbef-46f42b508869
+Mounting new filesystems
+
+
+
+Finished configuring system partitions! Run prechroot.sh to continue
+Disk setup complete!

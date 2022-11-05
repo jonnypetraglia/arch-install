@@ -13,6 +13,10 @@ function aurstrap {
         echo "Installing $1"
         yay -S --noconfirm $1 --needed
     fi
+    if [[ $? -ne 0 ]]
+    then
+        echo "$1" > "$ABSOLUTE_TARGET_DIR/.failed"
+    fi
 }
 
 targets=$(cut -d' ' -f1 $TARGET_FILE)
@@ -29,7 +33,7 @@ do
         echo "Skipping $pkg"
         continue
     fi
-    aurstrap $pkg
+    aurstrap $pkg || echo "$1" > "$pkg/.failed"
     if ls $pkg/$pkg*.tar.zst 1> /dev/null 2>&1
     then
         mv $pkg/$pkg*.tar.zst $ABSOLUTE_TARGET_DIR

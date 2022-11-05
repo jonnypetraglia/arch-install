@@ -212,14 +212,13 @@ function delete_existing_partitions {
     echo 'getting mounts'
     mounts=$(mount | grep '^/dev' || true)
     swaps=$(swapon | grep '^/dev' || true)
-    echo "Mounts $mounts"
-    echo "Swaps $swaps"
     for partition in "${existing_partitions[@]}"
     do
         if [[ "$mounts" == *"$partition"* ]]
         then
             echo "$mounts" contains $partition
             umount $partition
+            read
             echo "Unmounted $partition"
         fi
         if [[ "$swaps" == *"$partition"* ]]
@@ -237,7 +236,7 @@ function delete_existing_partitions {
             echo
         done
         echo 'w'
-    ) | fdisk $selected_disk_name
+    ) | fdisk $selected_disk_name --wipe always
     echo "Deleted ${#existing_partitions[@]} partitions."
 }
 function create_partitions {
@@ -247,7 +246,7 @@ function create_partitions {
     (
         echo g      # create a new empty GPT partition table
         echo w
-    ) | fdisk $selected_disk_name
+    ) | fdisk $selected_disk_name --wipe always
     echo "Created new Partition Table on $selected_disk_name"
     (
         echo n      # add a new partition
@@ -257,7 +256,7 @@ function create_partitions {
         echo t      # change a partition type
         echo 1      ## (EFI System)
         echo w
-    ) | fdisk $selected_disk_name
+    ) | fdisk $selected_disk_name --wipe always
     echo "Created boot partition at $boot_partition"
     (
         echo n      # add a new partition
@@ -266,7 +265,7 @@ function create_partitions {
         echo        ## (First sector) - will default to start of disk
         echo "+${root_partition_size_gb}g" ## (Last sector, +/-sectors or +/-size{K,M,G,T,P})
         echo w
-    ) | fdisk $selected_disk_name
+    ) | fdisk $selected_disk_name --wipe always
     echo "Created boot partition at $root_partition"
     (
         echo n      # add a new partition
@@ -278,7 +277,7 @@ function create_partitions {
         echo        ## (Partition number) - will default to 3
         echo 19     ## (Linux Swap)
         echo w
-    ) | fdisk $selected_disk_name
+    ) | fdisk $selected_disk_name --wipe always
     echo "Created swap partition at $swap_partition"
 }
 function create_filesystems {
@@ -308,11 +307,6 @@ function mount_filesystems {
     mount $boot_partition $ROOT_FS/boot
     swapon $swap_partition
 }
-function generate_fstab {
-    echo "Generating $ROOT_FS/etc/fstab"
-    mkdir -p $ROOT_FS/etc
-    genfstab -U $ROOT_FS > $ROOT_FS/etc/fstab
-}
 
 
 select_disk
@@ -320,7 +314,6 @@ start_partitions
 start_filesystems
 confirm_final
 mount_filesystems
-generate_fstab
 
 echo
 echo
