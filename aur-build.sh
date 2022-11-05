@@ -1,7 +1,7 @@
 RUN_AS=$(whoami)
 if [ $(id -u) -eq 0 ]
 then
-    RUN_AS=nobody
+    RUN_AS=$MY_USERNAME
 fi
 
 mkdir -p ./build
@@ -10,8 +10,8 @@ cd build
 echo "Building $1"
 curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$1" -o PKGBUILD
 
-latest_version=$(cat ./PKGBUILD | grep "^pkgver=" | cut -d'=' -f2)
-installed_version=$(pacman -Qi yay | grep "^Version " | cut -d':' -f2 | cut -d' ' -f1 | cut -d'-' -f1)
+latest_version="$(cat ./PKGBUILD | grep "^pkgver" | cut -d'=' -f2)"
+installed_version="$(pacman -Qi yay | grep '^Version ')" # | cut -d':' -f2 | cut -d' ' -f1 | cut -d'-' -f1)"
 
 if [[ "$installed_version" == *"$latest_version"* ]]
 then

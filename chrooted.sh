@@ -81,15 +81,7 @@ function install_pacman {
 
 # AUR
 function install_aur {
-    if [ -z "$(command -v yay)" ]
-    then
-        echo "Installing Yay"
-        sudo -u $MY_USERNAME ./aur-build.sh yay
-        pacman -U ./yay-*.tar.zst --noconfirm
-        rm yay-*.tar.zst
-    fi
-    # AUR Packages
-    ./aurstrap.sh
+    ./aurstrap-machine.sh
 }
 
 # Language Packages
@@ -130,7 +122,11 @@ setup_user
 # install_bootloader
 # pacman -Sy
 # install_pacman
-install_aur
+for pkgfile in $(cut -d' ' -f1 machines/$MY_HOSTNAME | grep "$aur\.")
+do
+    install_aur
+    break
+done
 install_other_packages
 enable_services
 

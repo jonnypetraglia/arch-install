@@ -20,8 +20,14 @@ else
     pkgfiles=$(cut -d' ' -f1 machines/$MY_HOSTNAME | grep ".aur$")
 fi
 
+pacman -S --needed $(cat packages/aur.pacman)
+sudo -u $MY_USERNAME $THIS_DIR/aurstrap-file.sh $THIS_DIR/packages/aur.aur $TARGET_DIR
+
 for pkgfile in ${pkgfiles[@]}
 do
-    echo "Aurstrapping $pkgfile"
-    sudo -u $MY_USERNAME $THIS_DIR/aurstrap-file.sh $THIS_DIR/packages/$pkgfile $TARGET_DIR
+    if [[ "$pkgfile" != aur.* ]]
+    then
+        echo "Aurstrapping $pkgfile"
+        sudo -u $MY_USERNAME $THIS_DIR/aurstrap-file.sh $THIS_DIR/packages/$pkgfile $TARGET_DIR
+    fi
 done
