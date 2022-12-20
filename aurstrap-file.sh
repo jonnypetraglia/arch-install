@@ -2,29 +2,40 @@
 
 TARGET_FILE="$1"
 TARGET_DIR="$2"
-ABSOLUTE_TARGET_DIR="$pwd/$TARGET_DIR"
-RUN_AS=$(whoami)
-if [ $(id -u) -eq 0 ]
+if [[ -z "$TARGET_DIR" ]]
 then
-    RUN_AS=$MY_USERNAME
+    TARGET_DIR='.'
 fi
+
+function build_with_yay {
+    echo "Building $1"
+    yay -Sw --noconfirm $1 --builddir .
+    if ls $pkg/$pkg*.tar.zst 1> /dev/null 2>&1
+    then
+        pacman -U $pkg/$pkg*.tar.zst
+        rm -f $pkg/$pkg*.tar.zst
+        # mv $pkg/$pkg*.tar.zst $TARGET_DIR
+    fi
+}
 
 function aurstrap {
     if [ $(id -u) -eq 0 ]
     then
-        echo "Building $1"
-        sudo -u $RUN_AS yay -Sw --noconfirm $1 --builddir .
+        echo 'ERROR: Cannot run austrap-file.sh as root'
+        exit 1
     else
         echo "Installing $1"
         yay -S --noconfirm $1 --needed
     fi
     if [[ $? -ne 0 ]]
     then
-        echo "$1" > "$ABSOLUTE_TARGET_DIR/.failed"
+        echo "$1" >> $TARGET_DIR/.failed
     fi
 }
 
 targets=$(cut -d' ' -f1 $TARGET_FILE)
+
+rm -f ./.failed
 
 mkdir -p tmp
 rm -rf tmp
@@ -33,11 +44,13 @@ cd tmp
 
 for pkg in ${targets[@]}
 do
-    latest_version="$(curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" || echo "!" | grep "^pkgver" | cut -d'=' -f2)"
+    latest_version="$(curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$pkg" | grep "^pkgver" | cut -d'=' -f2)"
     installed_version="$(pacman -Qi $pkg | grep '^Version ')" # | cut -d':' -f2 | cut -d' ' -f1 | cut -d'-' -f1)"
+    echo "Latest version of $pkg is $latest_version"
+    echo $installed_version
     if [[ "$installed_version" == *"$latest_version"* ]]
     then
-        echo "$1 $latest_version already installed"
+        echo "$pkg $latest_version already installed"
         continue
     fi
     if ls $ABSOLUTE_TARGET_DIR/$pkg*.tar.zst 1> /dev/null 2>&1
@@ -45,11 +58,7 @@ do
         echo "Skipping $pkg"
         continue
     fi
-    aurstrap $pkg || echo "$1" > "$pkg/.failed"
-    if ls $pkg/$pkg*.tar.zst 1> /dev/null 2>&1
-    then
-        mv $pkg/$pkg*.tar.zst $ABSOLUTE_TARGET_DIR
-    fi
+    aurstrap $pkg || echo "$pkg" >> ./.failed
     rm -rf *
 done
 cd ../

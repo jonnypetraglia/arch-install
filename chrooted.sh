@@ -95,7 +95,7 @@ function get_file_contents {
     cut -d' ' -f1 $1  | uniq
 }
 function install_other_packages {
-    ifexists fish   && haspackages fish     && cat ./packages/*fisher | sudo -u $MY_USERNAME fish install
+    ifexists fish   && haspackages fish     && cat ./packages/*fisher | su $MY_USERNAME "fish install"
     ifexists npm    && haspackages npm      && npm install --global $( get_file_contents './packages/*.npm' )
     ifexists gem    && haspackages gem      && gem install $( get_file_contents './packages/*.gem')
     ifexists pip    && haspackages pip      && pip install $( get_file_contents './packages/*.pip' )
