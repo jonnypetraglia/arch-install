@@ -1,4 +1,9 @@
 #!/bin/env bash
+#
+# This script calls aurstrap-file.sh with the
+# files in the packages directory for the machine
+# specified in MY_HOSTNAME
+#
 set -e
 set -o pipefail
 

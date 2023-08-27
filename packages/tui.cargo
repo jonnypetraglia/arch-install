@@ -1,2 +1,3 @@
 fast-ssh        # SSH connection manager
+otti            # OTP client
 ytop            # Replacement to top or htop

@@ -1,3 +1,11 @@
+#!/bin/env bash
+set -e
+set -o pipefail
+##
+# This script builds a package in the AUR
+# ....but it skips it if the latest version is already installed???
+##
+
 RUN_AS=$(whoami)
 if [ $(id -u) -eq 0 ]
 then
