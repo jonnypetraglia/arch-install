@@ -9,3 +9,5 @@ MY_ROUTER_IP='192.168.0.1'
 
 ROOT_FS='/mnt'
 
+# Options are systemd-boot or grub 
+BOOTLOADER='systemd-boot'

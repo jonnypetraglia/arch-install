@@ -11,9 +11,8 @@ cd /arch-install
 ###### Post-arch-chroot ######
 
 # cd /arch-install
-source ./environment.sh
-
 BOOTLOADER='systemd-boot'
+source ./environment.sh
 
 function setup_user {
     mkdir -p /home/$MY_USERNAME
